@@ -36,12 +36,12 @@ class CanvasService {
         let rug = new fabric.Rect({
             width: 84 * scaleFactor,
             height: 60 * scaleFactor,
-            originX: 'center',
-            originY: 'center',
             fill: '#ffffff'
         })
         canvas.add(rug)
-
+        rug.borderColor = 'gray'
+        rug.cornerColor = 'black'
+        rug.center()
         fabric.util.loadImage(rugPattern, function (img) {
             rug.set('fill', new fabric.Pattern({
                 source: img,
@@ -67,40 +67,28 @@ class CanvasService {
         if (category == "drum") {
             if (options.type == 'Kick') {
                 obj = new fabric.Rect({
-                    originX: 'center',
-                    originY: 'center',
                     fill: '#ffffff',
                     stroke: '#000000',
                     strokeWidth: 1.5,
                     height: options.depth * scaleFactor,
                     width: options.diameter * scaleFactor,
-                    lockScalingX: true,
-                    lockScalingY: true
+
                 })
             } else {
                 obj = new fabric.Circle({
-                    originX: 'center',
-                    originY: 'center',
                     fill: 'rgba(255,255,255, 0.5)',
                     stroke: '#000000',
                     strokeWidth: 1.5,
                     radius: (options.diameter / 2) * scaleFactor,
-                    lockScalingX: true,
-                    lockScalingY: true
+
                 })
             }
         } else {
             obj = new fabric.Circle({
-                originX: 'center',
-                originY: 'center',
                 fill: '#d0b17d',
                 stroke: '#000000',
                 strokeWidth: 1.5,
                 radius: (options.diameter / 2) * scaleFactor,
-                lockScalingX: true,
-                lockScalingY: true,
-                borderColor: 'gray',
-                cornerColor: 'black'
             })
         }
 
@@ -145,6 +133,10 @@ class CanvasService {
         //     drumList.innerHTML += `<li class="drum-list-item">${obj.label} ${obj.userLabel}</li>`
         //     }
         // })
+    }
+
+    static canvasToJSON(canvas) {
+        return canvas.toJSON(['label', 'userLabel'])
     }
 
     static initTooltip(canvas) {

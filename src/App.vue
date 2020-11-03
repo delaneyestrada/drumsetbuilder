@@ -1,66 +1,250 @@
 <template>
   <div id="app">
-    <b-container fluid="lg">
-      <ToolbarComponent v-bind:canvas="canvas" />
-    <div class="fabric-wrapper">
-      <canvas ref="can"></canvas>
-    </div>
-    <div id="object-lists">
-      <div class="list-container">
-        <h3>Drum List</h3>
-      <ul id="drum-list"></ul>
-      </div>
-      <div class="list-container">
-        <h3>Cymbal List</h3>
-      <ul id="cymbal-list"></ul>
-      </div>
-    </div>
-    <a id="scrnsht" target="_blank" download="download"></a>
-    </b-container>
+    <b-navbar type="dark" variant="dark" class="mb-3">
+      <b-navbar-nav>
+        <b-nav-item to="/">Builder</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
+      <b-nav-item-dropdown v-if="user.authenticated" right no-caret class="user-dropdown">
+          <template #button-content>
+            {{user.username.length > 0 ? user.username : 'User'}}
+          </template>
+          <b-dropdown-item :to="`/user/${user.username}`">Profile</b-dropdown-item>
+          <b-dropdown-item v-on:click="logOut">Logout</b-dropdown-item>
+        </b-nav-item-dropdown>
+        
+      <b-nav-item-dropdown v-if="!user.authenticated" right no-caret class="user-dropdown">
+          <template #button-content>
+            Register
+          </template>
+          <b-nav-form class="p-3" @submit.stop.prevent="registerForm">
+            <b-form-invalid-feedback id="register-feedback" :state="!this.register.error">Username and/or email already exists</b-form-invalid-feedback>
+
+            <b-form-group
+            label="Username"
+            label-for="register-username"
+            >
+                <b-form-input id="register-username" type="text" :state="validateState('register.username')" data-form="register" v-model.trim="$v.register.username.$model"></b-form-input>
+                <b-form-invalid-feedback id="register-username-feedback">Username is required</b-form-invalid-feedback>
+
+            </b-form-group>
+            <b-form-group
+            label="Email"
+            label-for="register-email"
+            >
+                <b-form-input id="register-email" type="text" :state="validateState('register.email')" data-form="register" v-model.trim="$v.register.email.$model"></b-form-input>
+                <b-form-invalid-feedback v-if="!$v.register.email.email">Email be a valid email address</b-form-invalid-feedback>
+                <b-form-invalid-feedback v-if="!$v.register.email.required">Email is required</b-form-invalid-feedback>
+
+            </b-form-group>
+            <b-form-group
+            label="Password"
+            label-for="register-password"
+            >
+                <b-form-input id="register-password" type="password" :state="validateState('register.password')" data-form="register" v-model.trim="$v.register.password.$model"></b-form-input>
+                <b-form-invalid-feedback v-if="!$v.register.password.minLength">Password must be at least 8 characters</b-form-invalid-feedback>
+                <b-form-invalid-feedback v-if="!$v.register.password.required">Password is required</b-form-invalid-feedback>
+
+            </b-form-group>
+            <b-form-group
+            label="Repeat Password"
+            label-for="register-repeat-password"
+            >
+                <b-form-input id="register-repeat-password" type="password" :state="validateState('register.repeatPassword')" data-form="register" v-model.trim="$v.register.repeatPassword.$model"></b-form-input>
+                <b-form-invalid-feedback id="register-repeat-password-feedback">Does not match password</b-form-invalid-feedback>
+
+            </b-form-group>
+            <b-button type="submit" variant="secondary">
+              Register
+            </b-button>
+          </b-nav-form>
+        </b-nav-item-dropdown>
+      <b-nav-item-dropdown v-if="!user.authenticated" right no-caret class="user-dropdown">
+          <template #button-content>
+            Sign In
+          </template>
+          <b-nav-form class="p-3" @submit.stop.prevent="logIn">
+            <b-form-invalid-feedback id="sign-in-feedback" :state="!this.signIn.error">Invalid username or password</b-form-invalid-feedback>
+            <b-form-group
+            label="Username"
+            label-for="sign-in-username"
+            >
+                <b-form-input id="sign-in-username" type="text" data-form="sign-in"  v-model="signIn.username"></b-form-input>
+            </b-form-group>
+            <b-form-group
+            label="Password"
+            label-for="sign-in-password"
+            >
+                <b-form-input id="sign-in-password" type="password" data-form="sign-in" v-model="signIn.password"></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="secondary">
+              Sign In
+            </b-button>
+          </b-nav-form>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-navbar>
+    <router-view />
   </div>
 </template>
 
 <script>
-import { fabric } from 'fabric';
-
-// import BuildComponent from './components/BuildComponent.vue'
-import ToolbarComponent from './components/ToolbarComponent.vue'
-import CanvasService from './CanvasService'
+import {mapState} from 'vuex'
+import {
+  validationMixin
+} from "vuelidate";
+import {
+  required,
+  minLength,
+  sameAs,
+  email
+} from "vuelidate/lib/validators";
 
 export default {
   name: 'App',
-  components: {
-    ToolbarComponent
+  mixins: [validationMixin],
+  data() {
+    return {
+      signIn: {
+        username: "",
+        password: "",
+        error: false,
+      },
+      register: {
+        username: "",
+        password: "",
+        repeatPassword: "",
+        email: "",
+        error: false,
+      },
+    }
   },
-  data(){
-return {
-  canvas: ""
-}
+  computed: mapState(['user', 'build']),
+  validations: {
+    register: {
+      username: {
+        required
+      },
+      password: {
+        required,
+        minLength: minLength(8)
+      },
+      repeatPassword: {
+        required,
+        sameAsPassword: sameAs('password')
+      },
+      email: {
+        required,
+        email
+      }
+    }
   },
-  mounted() {
-    const ref = this.$refs.can;
-    this.canvas = new fabric.Canvas(ref, {
-      backgroundColor: '#dddddd',
-      width: 500,
-      height: 281
-    });
-    this.canvas.preserveObjectStacking = true;
-    CanvasService.initCanvas(this.canvas)
-    CanvasService.resizeCanvas(this.canvas, true)
-    // CanvasService.initTooltip(this.canvas)
-
-    this.$nextTick(()=> {
-      window.addEventListener('resize', this.onResize)
-    })
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
+  created() {
+    // if (window.localStorage.auth != "null" && window.localStorage.auth != "false") {
+    //   this.persisted.authenticated = true
+    // } else {
+    //   this.persisted.authenticated = false
+    // }
+    // this.persisted.username = window.localStorage.username.replace(/"/g, '')
+    // this.persisted.userId = window.localStorage.userId.replace(/"/g, '')
+    // this.persisted.authToken = window.localStorage.auth
+    // // this.user = {id: window.localStorage.userId, username: window.localStorage.username}
   },
   methods: {
-    onResize(){
-      CanvasService.resizeCanvas(this.canvas)
+    validateState(name) {
+      let objArr = name.split('.')
+      const {
+        $dirty,
+        $error
+      } = this.$v[objArr[0]][objArr[1]];
+      return $dirty ? !$error : null;
+    },
+    logIn({authCreds = null}) {
+      console.log(authCreds)
+      this.$store.dispatch('fetchUser', {
+        username: this.signIn.username,
+        password: this.signIn.password
+      })
+      // if (authCreds === null) {
+      //   authCreds = {
+      //     username: this.signIn.username,
+      //     password: this.signIn.password
+      //   }
+      // }
+      // fetch('http://localhost:5001/api/users/login', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     },
+      //     body: JSON.stringify(authCreds)
+      //   })
+      //   .then(res => res.json()
+      //     .then((data) => {
+      //       if (data.success) {
+      //         let user = {
+      //           id: data.user,
+      //           username: data.username
+      //         }
+      //         window.localStorage.userId = user.id
+      //         window.localStorage.username = user.username
+      //         window.localStorage.auth = res.headers.get('auth-token')
+      //         this.persisted.authenticated = true
+      //       } else {
+      //         this.persisted.authenticated = false
+      //         this.signIn.error = true
+      //       }
+      //     }))
+      //   .catch(err => {
+      //     this.signIn.error = true
+      //     console.log(err)
+      //   })
+    },
+    logOut() {
+      // window.localStorage.auth = false
+      // window.localStorage.username = null
+      // window.localStorage.userId = null
+      // this.persisted.authenticated = false
+      this.$store.dispatch('resetUserState')
+      if(this.$route.name !== 'home'){
+        this.$router.push({path: '/'})
+      }
+    },
+    registerForm() {
+      this.$v.register.$touch();
+      if (this.$v.register.$anyError) {
+        return;
+      }
+      let registerData = {
+        username: this.register.username,
+        password: this.register.password,
+        email: this.register.email,
+      }
+      fetch('http://localhost:5001/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(registerData)
+        })
+        .then(res => res.json()
+          .then((data) => {
+            if (data.success) {
+              let authCreds = {
+                username: this.register.username,
+                password: this.register.password,
+              }
+              this.logIn(authCreds)
+            } else {
+              this.register.error = true
+            }
+          }))
+        .catch(err => {
+          this.register.error = true
+          console.log(err)
+        })
     }
-  }
+  },
+
 }
 </script>
 
@@ -71,41 +255,21 @@ return {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   background-color: #1a1a1a;
 }
 
-.fabric-wrapper, .toolbar {
+/* .form-group label {
   width: 100%;
-  max-width: 1000px;
-}
+} */
 
-.canvas-container {
-  margin: 0 auto;
+.form-group {
+  padding-bottom: 1rem;
+  width: 100%;
 }
-
-.container-lg {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#object-lists {
-  display: flex;
-  gap: 3rem;
-  color: white;
-}
-
-#object-lists h3 {
-  font-size: 1.4rem;
-}
-
-#object-lists ul {
-  list-style: none;
-}
-
-#object-lists li {
-  font-size: .9rem;
-}
+/* body {
+  background-color: #1a1a1a;
+  height: 100%;
+} */
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="'Add a drum'">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a drum', interactive: false}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/snare-drum.svg' alt=''>
           </template>
@@ -21,7 +21,6 @@
               label="Diameter"
               >
                 <b-form-spinbutton
-                id="drum-diameter"
                 min="4"
                 max="30"
                 step="1"
@@ -34,7 +33,6 @@
               label="Depth"
               >
                 <b-form-spinbutton
-                id="drum-depth"
                 min="2"
                 max="20"
                 step="1"
@@ -54,7 +52,7 @@
 
           </b-dropdown-form>
       </b-dropdown>
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="'Add a cymbal'">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a cymbal', interactive: false}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/cymbal.svg' alt=''>
           </template>
@@ -77,7 +75,6 @@
               label="Diameter"
               >
                 <b-form-spinbutton
-                id="cymbal-diameter"
                 min="4"
                 max="30"
                 step="1"
@@ -97,43 +94,80 @@
 
           </b-dropdown-form>
       </b-dropdown>
-      <b-button variant="link" v-on:click="moveForward" v-b-tooltip.hover.bottom="'Move selected forwards'">
+      <b-button variant="link" v-on:click="moveForward" v-b-tooltip.hover.bottom="{title: 'Move selected forwards', interactive: false}">
               <img class="img-fluid p-2" src='../assets/up-arrow.svg' alt=''>
       </b-button>
-      <b-button variant="link" v-on:click="moveBackward" v-b-tooltip.hover.bottom="'Move selected backwards'">
+      <b-button variant="link" v-on:click="moveBackward" v-b-tooltip.hover.bottom="{title: 'Move selected backwards', interactive: false}">
               <img class="img-fluid p-2" src='../assets/down-arrow.svg' alt=''>
       </b-button>
-      <b-button variant="link" v-on:click="removeObject" v-b-tooltip.hover.bottom="'Delete selected from canvas'">
+      <b-button variant="link" v-on:click="removeObject" v-b-tooltip.hover.bottom="{title: 'Delete selected from canvas', interactive: false}">
               <img class="img-fluid p-2" src='../assets/delete.svg' alt=''>
       </b-button>
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="'Show list'">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Canvas options', interactive: false}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/list.svg' alt=''>
           </template>
+          <b-dropdown-item @click="screenshot">Download canvas as .png</b-dropdown-item>
+        <b-dropdown-item v-on:click="$emit('new-canvas')">New canvas</b-dropdown-item>
+          <!-- <b-dropdown-item v-b-modal.download-modal>Download canvas as .png</b-dropdown-item> -->
+          <b-dropdown-item id="save-button" v-b-modal.save-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: this.user.authenticated, trigger: 'hover'}">Save canvas</b-dropdown-item>
+          <b-dropdown-item id="load-button" v-b-modal.load-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: this.user.authenticated, trigger: 'hover'}">Load canvas</b-dropdown-item>
       </b-dropdown>
-      <b-button variant="link" v-on:click="screenshot" v-b-tooltip.hover.bottom="'Save canvas as png'">
+      <!-- <b-button variant="link" v-on:click="screenshot" v-b-tooltip.hover.bottom="'Save canvas as png'">
               <img class="img-fluid p-2" src='../assets/camera.svg' alt=''>
       </b-button>
-  </div>
+      <b-button variant="link" v-on:click="saveCanvas" v-b-tooltip.hover.bottom="'Save this canvas'">
+              <img class="img-fluid p-2" src='../assets/diskette.svg' alt=''>
+      </b-button>
+      <b-button variant="link" v-on:click="screenshot" v-b-tooltip.hover.bottom="'Load a canvas'">
+              <img class="img-fluid p-2" src='../assets/folder.svg' alt=''>
+      </b-button> -->
+
+      <b-modal id="download-modal" title="Download Canvas" v-on:ok="test">
+        <p class="my-4">Hello from modal!</p>
+      </b-modal>
+      <b-modal id="save-modal" title="Save Canvas" v-on:ok="saveCanvas">
+        <b-form-group
+              id="save-canvas-label"
+              label="Name"
+              >
+                <b-form-input v-model="saveCanvasName">
+                </b-form-input>
+
+              </b-form-group>
+      </b-modal>
+      <b-modal id="load-modal" title="Load Canvas" v-on:ok="$emit('refresh-canvas')">
+        <BuildListComponent highlighting />
+      </b-modal>
+      </div>
+
 </template>
 
 <script>
 import CanvasService from '../CanvasService'
+import BuildListComponent from '../components/BuildListComponent'
+import {mapState} from 'vuex'
+
 
 export default {
     name: 'ToolbarComponent',
     props: ['canvas'],
+    components: {
+        BuildListComponent
+    },
     data() {
         return {
             drumType: 'Kick',
             drumDiameter: 14,
-            drumDepth: "",
+            drumDepth: 6,
             drumLabel: "",
             cymbalDiameter: 18,
             cymbalType: 'Crash',
-            cymbalLabel: ""
+            cymbalLabel: "",
+            saveCanvasName: ""
         }
     },
+    computed: mapState(['user', 'build']),
     methods: {
         screenshot(){
             CanvasService.convertToImage(this.canvas)
@@ -167,7 +201,31 @@ export default {
         },
         moveBackward(){
             this.canvas.sendBackwards(this.canvas.getActiveObject())
-        }
+        },
+        saveCanvas(){
+            let canvasData = CanvasService.canvasToJSON(this.canvas)
+            let build = {
+                name: this.saveCanvasName.replace(/ /g, '-'),
+                canvas: canvasData,
+                userId: this.user.userId
+            }
+            console.log(build)
+            fetch('http://localhost:5001/api/builds', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': this.user.authToken
+                },
+                body: JSON.stringify(build)
+            })
+            .then(res=>res.json())
+            .then(data=>{
+                console.log(data)
+            })
+        },
+        test(){
+            console.log('test')
+        },
     }
 }
 // export default {
