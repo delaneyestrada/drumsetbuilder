@@ -129,8 +129,8 @@
           <b-dropdown-item @click="screenshot">Download canvas as .png</b-dropdown-item>
         <b-dropdown-item v-on:click="$emit('new-canvas')">New canvas</b-dropdown-item>
           <!-- <b-dropdown-item v-b-modal.download-modal>Download canvas as .png</b-dropdown-item> -->
-          <b-dropdown-item id="save-button" v-b-modal.save-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.authenticated, trigger: 'hover'}">Save canvas</b-dropdown-item>
-          <b-dropdown-item id="load-button" v-b-modal.load-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.authenticated, trigger: 'hover'}">Load canvas</b-dropdown-item>
+          <b-dropdown-item id="save-button" v-b-modal.save-modal :disabled="!user.userProfile.username" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.userProfile.username, trigger: 'hover'}">Save canvas</b-dropdown-item>
+          <b-dropdown-item id="load-button" v-b-modal.load-modal :disabled="!user.userProfile.username" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.userProfile.username, trigger: 'hover'}">Load canvas</b-dropdown-item>
       </b-dropdown>
       <b-button variant="link" id="toggleTooltipsButton" v-on:click="toggleTooltips" v-b-tooltip.hover.bottom="{title: 'Toggle tips', interactive: false, disabled: !$store.state.app.tooltips}">
               <img class="img-fluid p-2" src='../assets/bulb.svg' alt=''>
