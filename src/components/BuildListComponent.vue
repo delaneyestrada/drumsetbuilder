@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="builds-container" v-if="builds">
+        <div class="builds-container" v-if="user.userProfile.builds">
             <b-card>
                 <ul class="build-items">
                     <li v-for="build in sortedBuilds" 
@@ -9,7 +9,7 @@
                     :id="build.name"
                     @click="highlighting ? highlightItemHandler(build.name) : null"
                     >
-                        <div class="build-info" v-b-tooltip.hover :title="`Click to load '${build.name.replace(/-/g, ' ')}'`" @click="loadBuild(build._id)">
+                        <div class="build-info" v-b-tooltip.hover="{title:`Click to load '${build.name.replace(/-/g, ' ')}'`, interactive: false, disabled: !$store.state.app.tooltips}" @click="loadBuild(build._id)">
                         <h3>{{build.name.replace(/-/g, ' ')}}</h3>
                          {{ `Created: ${build.createdAt.getMonth() + 1}-${build.createdAt.getDate()}-${build.createdAt.getFullYear()}` }} 
                          {{ `Modified: ${build.modifiedAt.getMonth() + 1}-${build.modifiedAt.getDate()}-${build.modifiedAt.getFullYear()}` }} 
@@ -32,10 +32,9 @@ export default {
     name: 'BuildListComponent',
     data() {
         return {
-            builds: "",
+            // builds: "",
             error: '',
             name: '',
-            user: '',
             items: []
         }
     },
@@ -44,49 +43,46 @@ export default {
         highlighting: Boolean
     },
     mounted() {
-        this.getBuilds()
+        // this.getBuilds()
     },
     computed: {
         sortedBuilds: function() {
-            let sortedBuilds = this.builds
+            let sortedBuilds = this.user.userProfile.builds
+            sortedBuilds = sortedBuilds.map(build => {
+                return {...build, createdAt: build.createdAt.toDate(), modifiedAt: build.modifiedAt.toDate()}
+            })
             sortedBuilds.sort((a, b) => {
                 return a.createdAt - b.createdAt
             })
             return sortedBuilds
         }, 
-        ...mapState(['build'])
+        ...mapState(['user', 'build'])
     },
     methods: {
-        getBuilds() {
-            fetch(`http://localhost:5001/api/builds/user/${this.$store.state.user.userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'auth-token': this.$store.state.user.authToken
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    this.builds = data.map(build => {
-                        return {...build, createdAt: new Date(build.createdAt), modifiedAt: new Date(build.modifiedAt)}
-                    })
-                })
-        },
+        // getBuilds() {
+        //     fetch(`http://localhost:5001/api/builds/user/${this.$store.state.user.userId}`, {
+        //             method: 'GET',
+        //             headers: {
+        //                 'auth-token': this.$store.state.user.authToken
+        //             }
+        //         })
+        //         .then(res => res.json())
+        //         .then(data => {
+        //             this.builds = data.map(build => {
+        //                 return {...build, createdAt: new Date(build.createdAt), modifiedAt: new Date(build.modifiedAt)}
+        //             })
+        //         })
+        // },
+        getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+},
         deleteBuild(buildId) {
-            fetch(`http://localhost:5001/api/builds/${buildId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'auth-token': this.$store.state.user.authToken
-                    }
-                })
-                .then(res => res.json())
-                .then(() => {
-                    this.getBuilds()
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            this.$store.dispatch('deleteBuild', buildId)
         },
         loadBuild(buildId) {
+            console.log(buildId)
             this.$store.dispatch('setBuildId', buildId)
             if(this.$route.name != 'home'){
             this.$router.push({

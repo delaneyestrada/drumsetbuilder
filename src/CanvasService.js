@@ -1,6 +1,9 @@
 import {
     fabric
 } from 'fabric';
+import {
+    v4 as uuidv4
+} from 'uuid'
 const scaleFactor = 4
 const rugPattern = require('@/assets/pattern.png')
 class CanvasService {
@@ -92,17 +95,22 @@ class CanvasService {
             })
         }
 
-        let text = new fabric.Text(options.label, {
-            fontSize: 15,
-            originX: 'center',
-            originY: 'center'
-        })
-        let group = new fabric.Group([obj, text], {
-            left: 100,
-            top: 100
-        })
+        // let text = new fabric.Text(options.label, {
+        //     fontSize: 15,
+        //     originX: 'center',
+        //     originY: 'center'
+        // })
+        // let text = new fabric.Text("", {
+        //     fontSize: 15,
+        //     originX: 'center',
+        //     originY: 'center'
+        // })
+        // let group = new fabric.Group([obj, text], {
+        //     left: 100,
+        //     top: 100
+        // })
 
-        group.setControlsVisibility({
+        obj.setControlsVisibility({
             bl: false,
             br: false,
             mb: false,
@@ -114,19 +122,25 @@ class CanvasService {
             mtr: true
         })
 
-        group.borderColor = 'gray'
-        group.cornerColor = 'black'
-        group.label = `${options.depth ? `${options.depth}" x ` : ""}${options.diameter}" ${options.type}`
-        group.userLabel = options.label
-        canvas.add(group)
+        obj.borderColor = 'gray'
+        obj.cornerColor = 'black'
+        obj.label = `${options.depth ? `${options.depth}" x ` : ""}${options.diameter}" ${options.type}`
+        obj.brand = options.brand
+        obj.model = options.model
+        obj.objType = category
+        obj.objInstrument = options.type
+        obj.id = uuidv4()
+
+        obj.on("mousedblclick", (e) => {
+            const event = new CustomEvent('edit-object', {
+                detail: e.target
+            })
+            document.getElementById("canvas").dispatchEvent(event)
+        })
+
+        canvas.add(obj)
         this.resizeCanvas(canvas)
-        let objList = ""
-        if (category == 'drum') {
-            objList = document.getElementById('drum-list')
-        } else {
-            objList = document.getElementById('cymbal-list')
-        }
-        objList.innerHTML += `<li class="${category}-list-item">${group.label} ${group.userLabel}</li>`
+
         // canvas.forEachObject(function (obj) {
         //     if(obj.label){
 
@@ -136,7 +150,7 @@ class CanvasService {
     }
 
     static canvasToJSON(canvas) {
-        return canvas.toJSON(['label', 'userLabel'])
+        return canvas.toJSON(['brand', 'model', 'objType', 'id', 'borderColor', 'cornerColor', '_controlsVisibility', 'objInstrument'])
     }
 
     static initTooltip(canvas) {

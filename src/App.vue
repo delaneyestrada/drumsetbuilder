@@ -2,18 +2,19 @@
   <div id="app">
     <b-navbar type="dark" variant="dark" class="mb-3">
       <b-navbar-nav>
-        <b-nav-item to="/">Builder</b-nav-item>
+        <b-nav-item class="brand" to="/">Drum Set Builder</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-      <b-nav-item-dropdown v-if="user.authenticated" right no-caret class="user-dropdown">
+        <b-nav-item to="/about">About</b-nav-item>
+      <b-nav-item-dropdown v-if="user.userProfile" right no-caret class="user-dropdown">
           <template #button-content>
-            {{user.username.length > 0 ? user.username : 'User'}}
+            {{user.username.length > 0 ? user.userProfile.username : 'User'}}
           </template>
-          <b-dropdown-item :to="`/user/${user.username}`">Profile</b-dropdown-item>
+          <b-dropdown-item :to="`/user/${user.userProfile.username}`">Profile</b-dropdown-item>
           <b-dropdown-item v-on:click="logOut">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
         
-      <b-nav-item-dropdown v-if="!user.authenticated" right no-caret class="user-dropdown">
+      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" class="user-dropdown">
           <template #button-content>
             Register
           </template>
@@ -59,17 +60,17 @@
             </b-button>
           </b-nav-form>
         </b-nav-item-dropdown>
-      <b-nav-item-dropdown v-if="!user.authenticated" right no-caret class="user-dropdown">
+      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" class="user-dropdown">
           <template #button-content>
             Sign In
           </template>
           <b-nav-form class="p-3" @submit.stop.prevent="logIn">
             <b-form-invalid-feedback id="sign-in-feedback" :state="!this.signIn.error">Invalid username or password</b-form-invalid-feedback>
             <b-form-group
-            label="Username"
-            label-for="sign-in-username"
+            label="Email"
+            label-for="sign-in-Email"
             >
-                <b-form-input id="sign-in-username" type="text" data-form="sign-in"  v-model="signIn.username"></b-form-input>
+                <b-form-input id="sign-in-Email" type="text" data-form="sign-in"  v-model="signIn.email"></b-form-input>
             </b-form-group>
             <b-form-group
             label="Password"
@@ -80,11 +81,21 @@
             <b-button type="submit" variant="secondary">
               Sign In
             </b-button>
+            <b-form-text class="ml-3" tag="a" style="cursor: pointer;" v-b-modal.password-reset-modal>Forgot Password</b-form-text>
           </b-nav-form>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
     <router-view />
+    <b-modal id="password-reset-modal" title="Reset Password" v-on:ok="resetPassword">
+        <b-form-group
+              label="Email"
+              >
+                <b-form-input v-model="passwordReset.email">
+                </b-form-input>
+              <b-form-text>Password reset link will be sent to the email you used to create the account</b-form-text>
+              </b-form-group>
+      </b-modal>
   </div>
 </template>
 
@@ -99,6 +110,7 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
+import { auth } from '@/firebase'
 
 export default {
   name: 'App',
@@ -106,7 +118,7 @@ export default {
   data() {
     return {
       signIn: {
-        username: "",
+        email: "",
         password: "",
         error: false,
       },
@@ -117,6 +129,10 @@ export default {
         email: "",
         error: false,
       },
+      passwordReset: {
+        email: "",
+        error: false
+      }
     }
   },
   computed: mapState(['user', 'build']),
@@ -161,8 +177,8 @@ export default {
     },
     logIn({authCreds = null}) {
       console.log(authCreds)
-      this.$store.dispatch('fetchUser', {
-        username: this.signIn.username,
+      this.$store.dispatch('login', {
+        email: this.signIn.email,
         password: this.signIn.password
       })
       // if (authCreds === null) {
@@ -204,7 +220,7 @@ export default {
       // window.localStorage.username = null
       // window.localStorage.userId = null
       // this.persisted.authenticated = false
-      this.$store.dispatch('resetUserState')
+      this.$store.dispatch('logout')
       if(this.$route.name !== 'home'){
         this.$router.push({path: '/'})
       }
@@ -219,38 +235,50 @@ export default {
         password: this.register.password,
         email: this.register.email,
       }
-      fetch('http://localhost:5001/api/users/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(registerData)
-        })
-        .then(res => res.json()
-          .then((data) => {
-            if (data.success) {
-              let authCreds = {
-                username: this.register.username,
-                password: this.register.password,
-              }
-              this.logIn(authCreds)
-            } else {
-              this.register.error = true
-            }
-          }))
-        .catch(err => {
-          this.register.error = true
-          console.log(err)
-        })
-    }
+      console.log(registerData)
+      this.$store.dispatch('register', registerData)
+      // fetch('http://localhost:5001/api/users/register', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     },
+      //     body: JSON.stringify(registerData)
+      //   })
+      //   .then(res => res.json()
+      //     .then((data) => {
+      //       if (data.success) {
+      //         let authCreds = {
+      //           username: this.register.username,
+      //           password: this.register.password,
+      //         }
+      //         this.logIn(authCreds)
+      //       } else {
+      //         this.register.error = true
+      //       }
+      //     }))
+      //   .catch(err => {
+      //     this.register.error = true
+      //     console.log(err)
+      //   })
+    },
+    async resetPassword() {
+    try {
+    await auth.sendPasswordResetEmail(this.passwordReset.email)
+    this.showSuccess = true
+  } catch (err) {
+    this.passwordReset.error = err.message
+  }
+  }
   },
+  
 
 }
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -258,6 +286,18 @@ export default {
   min-height: 100vh;
   height: 100%;
   background-color: #1a1a1a;
+}
+html, body, .modal {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.brand {
+  font-family: "Exo 2", sans-serif;
+  font-size: 1.2rem;
+}
+
+.nav-link {
+  font-weight: 600;
 }
 
 /* .form-group label {
@@ -267,6 +307,10 @@ export default {
 .form-group {
   padding-bottom: 1rem;
   width: 100%;
+}
+
+.user-dropdown .nav-link {
+  color: #fff !important;
 }
 /* body {
   background-color: #1a1a1a;

@@ -1,82 +1,86 @@
-// const initialState = {
-//     persisted: {
-//       authenticated: false,
-//       userId: null,
-//       username: null,
-//       authToken: null,
-//       buildId: null
-//     }
-//   }
+import * as fb from '../../firebase'
 
 
-const getDefaultState = () => {
-    return {
-        authenticated: false,
-        userId: null,
-        username: null,
-        authToken: null
-    }
+const state = {
+    userProfile: {}
 }
-
-const state = getDefaultState()
 
 const getters = {
     user: state => state
 }
 
 const actions = {
-    fetchUser: async ({
-        commit
-    }, {
-        username,
-        password
-    }) => {
-        var authCreds = {
-            username,
-            password
-        }
+    async login({
+        dispatch
+    }, form) {
+        // sign user in
+        const {
+            user
+        } = await fb.auth.signInWithEmailAndPassword(form.email, form.password)
 
-        const resp = await fetch('http://localhost:5001/api/users/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(authCreds)
-        })
-        console.log(resp)
-        const data = await resp.json()
-        console.log(data)
-        let payload = {
-            ...data,
-            authToken: resp.headers.get('auth-token')
-        }
-        console.log(payload)
-
-        commit('authenticate', payload)
+        // fetch user profile and set in state
+        dispatch('fetchUserProfile', user)
     },
-    resetUserState: ({
+    async fetchUserProfile({
         commit
-    }) => {
-        commit('resetState')
+    }, user) {
+        // fetch user profile
+        const userProfile = await fb.usersCollection.doc(user.uid).get()
+
+        // set user profile in state
+        commit('setUserProfile', userProfile.data())
+
+    },
+    async register({
+        dispatch
+    }, form) {
+        // sign user up
+        const {
+            user
+        } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password)
+
+        // create user profile object in userCollections
+        await fb.usersCollection.doc(user.uid).set({
+            username: form.username,
+            builds: []
+        })
+
+        // fetch user profile and set in state
+        dispatch('fetchUserProfile', user)
+    },
+    async logout({
+        commit
+    }) {
+        await fb.auth.signOut()
+
+        // clear userProfile and redirect to /login
+        commit('setUserProfile', {})
+    },
+    async addBuild({
+        dispatch
+    }, build) {
+        let user = await fb.auth.currentUser
+        await fb.usersCollection.doc(user.uid).update({
+            builds: fb.fb.firestore.FieldValue.arrayUnion(build)
+        })
+        dispatch('fetchUserProfile', user)
+    },
+    async deleteBuild({
+        dispatch
+    }, buildId) {
+        let user = await fb.auth.currentUser
+        let userObj = await fb.usersCollection.doc(user.uid).get()
+        let builds = userObj.get('builds').filter(build => build._id != buildId)
+        await fb.usersCollection.doc(user.uid).update({
+            builds
+        })
+        dispatch('fetchUserProfile', user)
     }
 }
 
 const mutations = {
-    resetState(state) {
-        Object.assign(state, getDefaultState())
-        window.localStorage.clear()
-    },
-    authenticate(state, data) {
-        if (data.success) {
-            state.userId = data.user
-            state.username = data.username
-            state.authToken = data.authToken
-            state.authenticated = true
-        } else {
-            state.authenticated = false
-            // this.signIn.error = true
-        }
-
+    setUserProfile(state, val) {
+        state.userProfile = val
     }
 }
 

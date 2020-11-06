@@ -28,6 +28,11 @@ const actions = {
         commit
     }) => {
         commit('resetState')
+    },
+    logout: ({
+        commit
+    }) => {
+        commit('resetState')
     }
 }
 
@@ -37,7 +42,6 @@ const mutations = {
     },
     resetState(state) {
         Object.assign(state, getDefaultState())
-        window.localStorage.clear()
     }
 }
 

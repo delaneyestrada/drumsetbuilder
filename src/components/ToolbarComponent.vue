@@ -1,15 +1,15 @@
 <template>
   <div class="toolbar">
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a drum', interactive: false}">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a drum', interactive: false, disabled: !$store.state.app.tooltips}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/snare-drum.svg' alt=''>
           </template>
           <b-dropdown-form>
               <b-form-group
               id="drum-type"
-              label="Type of drum"
+              label="Category"
               >
-                <b-form-select class="mb-1" v-model="drumType">
+                <b-form-select v-model="drumType">
                     <b-form-select-option value="Kick">Kick</b-form-select-option>
                     <b-form-select-option value="Snare">Snare</b-form-select-option>
                     <b-form-select-option value="Tom">Tom</b-form-select-option>
@@ -20,31 +20,42 @@
               id="drum-diameter"
               label="Diameter"
               >
-                <b-form-spinbutton
+                <!-- <b-form-spinbutton
                 min="4"
                 max="30"
                 step="1"
                 class="mb-1"
                 v-model="drumDiameter"
-                ></b-form-spinbutton>
+                ></b-form-spinbutton> -->
+                <b-form-input type="number" min="2" max="30" autofocus v-model="drumDiameter"></b-form-input>
+
               </b-form-group>
               <b-form-group
               id="drum-depth"
               label="Depth"
               >
-                <b-form-spinbutton
+                <!-- <b-form-spinbutton
                 min="2"
                 max="20"
                 step="1"
                 class="mb-1"
                 v-model="drumDepth"
-                ></b-form-spinbutton>
+                ></b-form-spinbutton> -->
+              <b-form-input type="number" min="2" max="30" autofocus v-model="drumDepth"></b-form-input>
               </b-form-group>
               <b-form-group
-              id="drum-label"
-              label="Label"
+              id="drum-brand"
+              label="Brand"
               >
-                <b-form-input placeholder="Optional" v-model="drumLabel">
+                <b-form-input placeholder="Optional" v-model="drumBrand">
+                </b-form-input>
+
+              </b-form-group>
+              <b-form-group
+              id="drum-model"
+              label="Model"
+              >
+                <b-form-input placeholder="Optional" v-model="drumModel">
                 </b-form-input>
 
               </b-form-group>
@@ -52,16 +63,16 @@
 
           </b-dropdown-form>
       </b-dropdown>
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a cymbal', interactive: false}">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Add a cymbal', interactive: false, disabled: !$store.state.app.tooltips}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/cymbal.svg' alt=''>
           </template>
           <b-dropdown-form>
               <b-form-group
               id="cymbal-type"
-              label="Type of cymbal"
+              label="Category"
               >
-                <b-form-select class="mb-1" v-model="cymbalType">
+                <b-form-select v-model="cymbalType">
                     <b-form-select-option value="Crash">Crash</b-form-select-option>
                     <b-form-select-option value="Ride">Ride</b-form-select-option>
                     <b-form-select-option value="Hi-Hats">Hi-Hats</b-form-select-option>
@@ -74,19 +85,27 @@
               id="cymbal-diameter"
               label="Diameter"
               >
-                <b-form-spinbutton
+                <!-- <b-form-spinbutton
                 min="4"
                 max="30"
                 step="1"
                 class="mb-1"
                 v-model="cymbalDiameter"
-                ></b-form-spinbutton>
+                ></b-form-spinbutton> -->
+              <b-form-input type="number" min="2" max="30" autofocus v-model="cymbalDiameter"></b-form-input>
               </b-form-group>
               <b-form-group
-              id="cymbal-label"
-              label="Label"
+              id="cymbal-brand"
+              label="Brand"
               >
-                <b-form-input placeholder="Optional" v-model="cymbalLabel">
+                <b-form-input placeholder="Optional" v-model="cymbalBrand">
+                </b-form-input>
+                </b-form-group>
+              <b-form-group
+              id="cymbal-model"
+              label="Model"
+              >
+                <b-form-input placeholder="Optional" v-model="cymbalModel">
                 </b-form-input>
 
               </b-form-group>
@@ -94,25 +113,28 @@
 
           </b-dropdown-form>
       </b-dropdown>
-      <b-button variant="link" v-on:click="moveForward" v-b-tooltip.hover.bottom="{title: 'Move selected forwards', interactive: false}">
+      <b-button variant="link" v-on:click="moveForward" v-b-tooltip.hover.bottom="{title: 'Move selected forwards', interactive: false, disabled: !$store.state.app.tooltips}">
               <img class="img-fluid p-2" src='../assets/up-arrow.svg' alt=''>
       </b-button>
-      <b-button variant="link" v-on:click="moveBackward" v-b-tooltip.hover.bottom="{title: 'Move selected backwards', interactive: false}">
+      <b-button variant="link" v-on:click="moveBackward" v-b-tooltip.hover.bottom="{title: 'Move selected backwards', interactive: false, disabled: !$store.state.app.tooltips}">
               <img class="img-fluid p-2" src='../assets/down-arrow.svg' alt=''>
       </b-button>
-      <b-button variant="link" v-on:click="removeObject" v-b-tooltip.hover.bottom="{title: 'Delete selected from canvas', interactive: false}">
+      <b-button variant="link" v-on:click="removeObject" v-b-tooltip.hover.bottom="{title: 'Delete selected from canvas', interactive: false, disabled: !$store.state.app.tooltips}">
               <img class="img-fluid p-2" src='../assets/delete.svg' alt=''>
       </b-button>
-      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Canvas options', interactive: false}">
+      <b-dropdown no-caret variant="link" v-b-tooltip.hover.bottom="{title: 'Canvas options', interactive: false, disabled: !$store.state.app.tooltips}">
           <template slot="button-content">
               <img class="img-fluid p-2" src='../assets/list.svg' alt=''>
           </template>
           <b-dropdown-item @click="screenshot">Download canvas as .png</b-dropdown-item>
         <b-dropdown-item v-on:click="$emit('new-canvas')">New canvas</b-dropdown-item>
           <!-- <b-dropdown-item v-b-modal.download-modal>Download canvas as .png</b-dropdown-item> -->
-          <b-dropdown-item id="save-button" v-b-modal.save-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: this.user.authenticated, trigger: 'hover'}">Save canvas</b-dropdown-item>
-          <b-dropdown-item id="load-button" v-b-modal.load-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: this.user.authenticated, trigger: 'hover'}">Load canvas</b-dropdown-item>
+          <b-dropdown-item id="save-button" v-b-modal.save-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.authenticated, trigger: 'hover'}">Save canvas</b-dropdown-item>
+          <b-dropdown-item id="load-button" v-b-modal.load-modal :disabled="!user.authenticated" v-b-tooltip.right="{title: 'Sign in to use this function', interactive: false, disabled: !$store.state.app.tooltips, disabled: this.user.authenticated, trigger: 'hover'}">Load canvas</b-dropdown-item>
       </b-dropdown>
+      <b-button variant="link" id="toggleTooltipsButton" v-on:click="toggleTooltips" v-b-tooltip.hover.bottom="{title: 'Toggle tips', interactive: false, disabled: !$store.state.app.tooltips}">
+              <img class="img-fluid p-2" src='../assets/bulb.svg' alt=''>
+      </b-button>
       <!-- <b-button variant="link" v-on:click="screenshot" v-b-tooltip.hover.bottom="'Save canvas as png'">
               <img class="img-fluid p-2" src='../assets/camera.svg' alt=''>
       </b-button>
@@ -147,6 +169,9 @@
 import CanvasService from '../CanvasService'
 import BuildListComponent from '../components/BuildListComponent'
 import {mapState} from 'vuex'
+import {
+    v4 as uuidv4
+} from 'uuid'
 
 
 export default {
@@ -160,10 +185,12 @@ export default {
             drumType: 'Kick',
             drumDiameter: 14,
             drumDepth: 6,
-            drumLabel: "",
+            drumBrand: "",
+            drumModel: "",
             cymbalDiameter: 18,
             cymbalType: 'Crash',
-            cymbalLabel: "",
+            cymbalBrand: "",
+            cymbalModel: "",
             saveCanvasName: ""
         }
     },
@@ -176,7 +203,8 @@ export default {
             var options = {
                 type: this.drumType,
                 diameter: this.drumDiameter,
-                label: this.drumLabel
+                brand: this.drumBrand,
+                model: this.drumModel
             }
             if(this.depth != ""){
                 options = {
@@ -189,7 +217,8 @@ export default {
             var options = {
                 type: this.cymbalType,
                 diameter: this.cymbalDiameter,
-                label: this.cymbalLabel
+                brand: this.cymbalBrand,
+                model: this.cymbalModel
             }
             CanvasService.addToCanvas(this.canvas, 'cymbal', options)
         },
@@ -207,21 +236,19 @@ export default {
             let build = {
                 name: this.saveCanvasName.replace(/ /g, '-'),
                 canvas: canvasData,
-                userId: this.user.userId
+                createdAt: new Date,
+                modifiedAt: new Date,
+                _id: uuidv4()
             }
-            console.log(build)
-            fetch('http://localhost:5001/api/builds', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'auth-token': this.user.authToken
-                },
-                body: JSON.stringify(build)
-            })
-            .then(res=>res.json())
-            .then(data=>{
-                console.log(data)
-            })
+            this.$store.dispatch('addBuild', build)
+        },
+        toggleTooltips(){
+            if(this.$store.state.app.tooltips){
+            this.$root.$emit('bv::hide::tooltip')
+        } else {
+            this.$root.$emit('bv::show::tooltip', 'toggleTooltipsButton')
+        }
+            this.$store.dispatch('toggleTooltips')
         },
         test(){
             console.log('test')
@@ -256,6 +283,12 @@ img {
 }
 </style>
 <style>
+form {
+    font-size: .8em;
+}
+.form-group {
+    margin-bottom: 0;
+}
 .btn:hover {
     background-color: #222222 !important;
 }

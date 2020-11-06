@@ -2,6 +2,10 @@ import VueRouter from 'vue-router'
 import Vue from "vue"
 import Home from "./views/Home.vue"
 import User from "./views/User.vue"
+import About from "./views/About.vue"
+import {
+    auth
+} from './firebase'
 
 Vue.use(VueRouter)
 
@@ -19,8 +23,17 @@ const routes = [{
     },
     {
         path: '/user/:id',
-        component: User
+        component: User,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/about',
+        name: 'about',
+        component: About
     }
+
 ]
 
 // 3. Create the router instance and pass the `routes` option
@@ -32,14 +45,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (localStorage.getItem('auth') == null) {
-            next({
-                path: '/',
-            })
-        } else {
-            next()
-        }
+    const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
+
+    if (requiresAuth && !auth.currentUser) {
+        next('/')
     } else {
         next()
     }
