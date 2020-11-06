@@ -172,6 +172,7 @@ import {mapState} from 'vuex'
 import {
     v4 as uuidv4
 } from 'uuid'
+import firebase from 'firebase'
 
 
 export default {
@@ -236,8 +237,8 @@ export default {
             let build = {
                 name: this.saveCanvasName.replace(/ /g, '-'),
                 canvas: canvasData,
-                createdAt: new Date,
-                modifiedAt: new Date,
+                createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+                modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
                 _id: uuidv4()
             }
             this.$store.dispatch('addBuild', build)
