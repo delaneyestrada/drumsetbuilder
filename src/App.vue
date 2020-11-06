@@ -8,7 +8,7 @@
         <b-nav-item to="/about">About</b-nav-item>
       <b-nav-item-dropdown v-if="user.userProfile" right no-caret class="user-dropdown">
           <template #button-content>
-            {{user.username.length > 0 ? user.userProfile.username : 'User'}}
+            {{user.userProfile.username.length > 0 ? user.userProfile.username : 'User'}}
           </template>
           <b-dropdown-item :to="`/user/${user.userProfile.username}`">Profile</b-dropdown-item>
           <b-dropdown-item v-on:click="logOut">Logout</b-dropdown-item>
