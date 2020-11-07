@@ -302,6 +302,21 @@ export default {
   height: 100%;
   background-color: #1a1a1a;
 }
+@media screen and (max-width: 800px) and (min-width: 490px){
+:root {
+  font-size: 14px;
+}
+}
+@media screen and (max-width: 490px) and (min-width: 400px){
+  :root {
+    font-size: 12px;
+  }
+}
+@media screen and (max-width: 422px){
+  :root {
+    font-size: 10px;
+  }
+}
 html, body, .modal {
     font-family: 'Montserrat', sans-serif;
 }
@@ -312,11 +327,11 @@ body {
 
 .brand {
   font-family: "Exo 2", sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.2em;
 }
 
 .brand-logo {
-  width: 10rem;
+  width: 8em;
 }
 
 .nav-link {
