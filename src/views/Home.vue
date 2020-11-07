@@ -10,16 +10,7 @@
     <div class="fabric-wrapper" v-b-tooltip.bottom="{title: 'Double click an object to edit', interactive: false, disabled: !$store.state.app.tooltips, trigger: 'hover'}">
       <canvas ref="can" id="canvas" @edit-object="editObjectModal($event)"></canvas>
     </div>
-    <!-- <div id="object-lists">
-      <div class="list-container">
-        <h3>Drum List</h3>
-      <ul id="drum-list"></ul>
-      </div>
-      <div class="list-container">
-        <h3>Cymbal List</h3>
-      <ul id="cymbal-list"></ul>
-      </div>
-    </div> -->
+
     <b-card bg-variant="dark" no-body class="mt-3 mb-5 list-card">
     <div id="object-lists" class="mt-3">
     <CanvasListComponent class="mx-3 canvas-list" v-bind:objects="canvasDrums" v-on:edit-object="editObjectModal($event)"  v-on:delete-object="deleteObject($event)">Drum List</CanvasListComponent>
@@ -32,20 +23,16 @@
     <template #modal-title>
       Edit object
     </template>
+    <template v-slot:default="slotProps">
     <div class="item-labels mb-4">
       <div>Current: <code>{{currObj.label}}</code></div>
       <div>New: <code>{{objEditForm.depth ? `${objEditForm.depth}" x ` : ''}}{{objEditForm.diameter}}" {{objEditForm.brand ? objEditForm.brand + ' ' : ''}}{{objEditForm.model ? objEditForm.model + ' ' : ''}}{{currObj.objInstrument}}</code></div>
       </div>
+      <b-form v-on:keyup.enter="slotProps.ok()">
               <b-form-group
               id="diameter"
               label="Diameter"
               >
-                <!-- <b-form-spinbutton
-                min="4"
-                max="30"
-                step="1"
-                v-model="objEditForm.diameter"
-                ></b-form-spinbutton> -->
                 <b-form-input type="number" min="2" max="30" autofocus v-model="objEditForm.diameter"></b-form-input>
               </b-form-group>
               <b-form-group
@@ -53,13 +40,6 @@
               id="depth"
               label="Depth"
               >
-                <!-- <b-form-spinbutton
-                min="2"
-                max="20"
-                step="1"
-                class="mb-1"
-                v-model="objEditForm.depth"
-                ></b-form-spinbutton> -->
               <b-form-input type="number" min="2" max="30" v-model="objEditForm.depth"></b-form-input>
 
               </b-form-group>
@@ -79,6 +59,8 @@
                 </b-form-input>
 
               </b-form-group>
+      </b-form>
+    </template>
   </b-modal>
   </div>
 </template>
@@ -255,7 +237,7 @@ export default {
 </script>
 
 <style>
-.dropdown-menu{
+.dropdown-menu:not(.user-dropdown){
   min-width: 20em;
 }
 /* .user-dropdown {

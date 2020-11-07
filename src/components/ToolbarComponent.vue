@@ -7,7 +7,7 @@
             </template>
             <template v-slot:default="slotProps">
 
-                <b-dropdown-form>
+                <b-dropdown-form v-on:keyup.enter="addDrum(); slotProps.hide()">
                     <b-form-group id="drum-type" label="Category">
                         <b-form-select v-model="drumType">
                             <b-form-select-option value="Kick">Kick</b-form-select-option>
@@ -45,7 +45,7 @@
                 <img class="img-fluid p-2" src='../assets/cymbal.svg' alt=''>
             </template>
             <template v-slot:default="slotProps">
-                <b-dropdown-form>
+                <b-dropdown-form v-on:keyup.enter="addCymbal(); slotProps.hide()">
                     <b-form-group id="cymbal-type" label="Category">
                         <b-form-select v-model="cymbalType">
                             <b-form-select-option value="Crash">Crash</b-form-select-option>
@@ -109,11 +109,13 @@
             <p class="my-4">Hello from modal!</p>
         </b-modal>
         <b-modal id="save-modal" title="Save Canvas" v-on:ok="saveCanvas">
-            <b-form-group id="save-canvas-label" label="Name">
+            <template v-slot:default="slotProps">
+            <b-form-group id="save-canvas-label" label="Name" v-on:keyup.native.enter="slotProps.ok()">
                 <b-form-input v-model="saveCanvasName" autofocus>
                 </b-form-input>
 
             </b-form-group>
+            </template>
         </b-modal>
         <b-modal id="load-modal" title="Load Canvas" v-on:ok="$emit('refresh-canvas')">
             <BuildListComponent highlighting />
