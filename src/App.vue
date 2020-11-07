@@ -6,7 +6,7 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item to="/about">About</b-nav-item>
-      <b-nav-item-dropdown v-if="user.userProfile" right no-caret class="user-dropdown">
+      <b-nav-item-dropdown v-if="Object.keys(user.userProfile).length" right no-caret class="user-dropdown">
           <template #button-content>
             {{user.userProfile.username.length > 0 ? user.userProfile.username : 'User'}}
           </template>
