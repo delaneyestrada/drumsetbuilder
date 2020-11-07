@@ -255,7 +255,9 @@ export default {
 </script>
 
 <style>
-
+.dropdown-menu{
+  min-width: 20em;
+}
 /* .user-dropdown {
   margin-left: auto;
 }

@@ -36,7 +36,7 @@
           </div>
         </div>
         <div class="section">
-        <h2 class="text-light">Builds</h2>
+        <h2 class="text-light">Canvases</h2>
         <BuildListComponent class="pb-5" deleteButton />
         </div>
         </main>

@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="builds-container" v-if="user.userProfile.builds">
+        <div class="builds-container">
             <b-card>
-                <ul class="build-items">
+                <ul class="build-items" v-if="user.userProfile.builds.length">
                     <li v-for="build in sortedBuilds" 
                     class="build-item" 
                     v-bind:key="build.name"
@@ -19,9 +19,12 @@
                         </div>
                     </li>
                     </ul>
+                    <div v-else class="no-builds">
+                        You don't have any canvases yet
+                    </div>
             </b-card>
-
         </div>
+        
     </div>
 </template>
 
@@ -136,6 +139,9 @@ ul {
 }
 .build-item.active {
     background-color: #e1e1e1;
+}
+.no-builds {
+    padding: 1em;
 }
 
 </style>
