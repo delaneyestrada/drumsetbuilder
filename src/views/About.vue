@@ -21,16 +21,16 @@
                             <input type="hidden" name="form-name" value="bugs-and-features">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="sender" name="sender" value=""
+                                <input required type="text" class="form-control" id="sender" name="sender" value=""
                                     aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="">
+                                <input required type="email" class="form-control" id="email" name="email" value="">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="message">Message</label>
-                                <textarea class="form-control" id="message" rows="3" name="message"></textarea>
+                                <textarea required class="form-control" id="message" rows="3" name="message"></textarea>
                             </div>
                             <div class="mb-3">
                                 <div data-netlify-recaptcha="true"></div>
