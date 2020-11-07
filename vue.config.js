@@ -1,5 +1,6 @@
 module.exports = {
     runtimeCompiler: true,
+
     chainWebpack: config => {
         config
             .plugin('html')
@@ -7,5 +8,18 @@ module.exports = {
                 args[0].title = "Drum Set Builder"
                 return args
             })
+    },
+
+    pluginOptions: {
+      prerenderSpa: {
+        registry: undefined,
+        renderRoutes: [
+          '/',
+          '/about'
+        ],
+        useRenderEvent: true,
+        headless: true,
+        onlyProduction: true
+      }
     }
 }
