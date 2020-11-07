@@ -2,7 +2,9 @@
   <div id="app">
     <b-navbar type="dark" variant="dark" class="mb-3">
       <b-navbar-nav>
-        <b-nav-item class="brand" to="/">Drum Set Builder</b-nav-item>
+        <b-navbar-brand class="brand" to="/">
+      <img src="@/assets/drumsetbuilder-wide.svg" class="d-inline-block align-top brand-logo img-fluid" alt="Drumset Builder">
+    </b-navbar-brand>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item to="/about">About</b-nav-item>
@@ -298,6 +300,10 @@ body {
 .brand {
   font-family: "Exo 2", sans-serif;
   font-size: 1.2rem;
+}
+
+.brand-logo {
+  width: 10rem;
 }
 
 .nav-link {
