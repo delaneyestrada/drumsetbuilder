@@ -18,7 +18,7 @@
         <b-card>
             <b-card-title>Bug Reports & Feature Requests</b-card-title>
              <form name="bugs-and-features" id="bugs-and-features" method="POST" data-netlify="true" data-netlify-recaptcha="true">
-                            <input type="hidden" name="contact-form" value="bugs-and-features">
+                            <input type="hidden" name="bugs-and-features" value="bugs-and-features">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input required type="text" class="form-control" id="sender" name="sender" value=""
