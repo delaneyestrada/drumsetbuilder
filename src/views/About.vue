@@ -45,6 +45,15 @@
 <script>
     export default {
         name: "About",
+        head: {
+            title: {
+                inner: 'Drumset Builder',
+                complement: 'About'
+            },
+            meta: [
+                {name: 'description', content: "I (Dillon Estrada) created Drumset Builder because any similar tools I've seen in the past are no longer available, and I find being able to map out a set up before actually physically putting it together to be very useful."}
+            ]
+        },
     }
 </script>
 

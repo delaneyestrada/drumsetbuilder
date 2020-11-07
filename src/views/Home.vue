@@ -128,6 +128,18 @@ export default {
       return require('@/assets/pattern.png')
     }
   },
+  head: {
+    title: {
+      inner: 'Drumset Builder',
+      complement: 'Build'
+    },
+    meta: [
+      {
+        name: 'description',
+        content: 'Build and save your drum setup and export it as an image.'
+      },
+    ]
+  },
   mounted() {
     firebase.auth().onAuthStateChanged(function(user) {
       if(user){

@@ -162,13 +162,7 @@ export default {
     }
   },
   head: {
-    title: {
-      inner: 'Drumset Builder'
-    },
-    meta: [{
-        name: 'description',
-        content: 'Build and save your drum setup and export it as an image.'
-      },
+    meta: [
       {
         name: 'og:description',
         content: 'Build and save your drum setup and export it as an image.'
