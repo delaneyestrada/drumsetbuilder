@@ -1,16 +1,43 @@
 <template>
-    <div>
-            <b-container fluid="lg">
+    <div class="main">
+            <b-container class="cards" fluid="lg">
         <b-card>
             <b-card-title>About</b-card-title>
             <b-card-text>
                 <p>I (<a href="https://www.dillonestrada.com">Dillon Estrada</a>) created Drum Set Builder because any similar tools I've seen in the past are no longer available, and I find being able to map out a set up before actually physically putting it together to be very useful.</p>
-                <p>This is a very early version of the app, so there are bound to be bugs. There are also many features that I have planned to be added in the near future.</p>
-                <p>If you would like to contribute to the further development and maintenance costs of this app, you can donate with the links below. (If you can not see the links, your adblocker may be blocking them)</p>
+                <p>This is a very early version of the app, so there are bound to be bugs. There are also many features that I have planned to be added in the near future, such as:</p> 
+                <ul>
+                    <li>updated graphics for the instruments and user uploaded finishes</li>
+                    <li>adding kick pedals and hi hat stands</li>
+                    <li>the ability to add your instrument information in each canvas to screenshots</li>
+                    <li>and more...</li>
+                </ul>
+                <p>If you would like to contribute to the further development and maintenance of this app, then buy me a coffee with the button in the bottom right-hand corner.</p>
             </b-card-text>
-            <div class="addthis_tipjar_inline"></div>
         </b-card>
-
+        <b-card>
+            <b-card-title>Bug Reports & Feature Requests</b-card-title>
+             <form name="bugs-and-features" id="bugs-and-features" method="POST" data-netlify="true">
+                            <input type="hidden" name="form-name" value="bugs-and-features">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="sender" name="sender" value=""
+                                    aria-describedby="emailHelp">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="message">Message</label>
+                                <textarea class="form-control" id="message" rows="3" name="message"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div data-netlify-recaptcha="true"></div>
+                            </div>
+                            <button id="contact-submit" type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+        </b-card>
     </b-container>
     </div>
 </template>
@@ -21,10 +48,13 @@
     }
 </script>
 
-<style>
-.addthis_toolbox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+<style scoped>
+.main {
+    text-align: left;
+}
+.cards {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 }
 </style>
