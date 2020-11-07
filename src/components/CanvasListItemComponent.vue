@@ -15,7 +15,8 @@
         props: ['object'],
         computed: {
             label() {
-                return this.object.label
+                let objLabel = `${this.object.depth ? this.object.depth + '" x ' : ""}${this.object.diameter}" ${this.object.brand} ${this.object.model} ${this.object.objInstrument}`
+                return objLabel
             }
         }
     }
@@ -28,6 +29,7 @@
     margin: auto 0;
     text-align: center;
     max-width: 100%;
+    word-wrap: break-word;
     overflow-wrap: break-word;
     vertical-align: bottom;
     font-weight: 600;
@@ -39,7 +41,7 @@
 .obj-card {
     display: grid;
     grid-template-columns: 90% 10%;
-    max-width: 100%;
+    width: 100%;
 }
 .delete-object {
     margin: auto 0;

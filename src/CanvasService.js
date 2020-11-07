@@ -124,7 +124,11 @@ class CanvasService {
 
         obj.borderColor = 'gray'
         obj.cornerColor = 'black'
-        obj.label = `${options.depth ? `${options.depth}" x ` : ""}${options.diameter}" ${options.type}`
+        if (options.depth) {
+            obj.depth = options.depth
+        }
+        obj.diameter = options.diameter
+        obj.label = options.label
         obj.brand = options.brand
         obj.model = options.model
         obj.objType = category
@@ -150,7 +154,7 @@ class CanvasService {
     }
 
     static canvasToJSON(canvas) {
-        return canvas.toJSON(['brand', 'model', 'objType', 'id', 'borderColor', 'cornerColor', '_controlsVisibility', 'objInstrument'])
+        return canvas.toJSON(['brand', 'depth', 'diameter', 'label', 'model', 'objType', 'id', 'borderColor', 'cornerColor', '_controlsVisibility', 'objInstrument'])
     }
 
     static initTooltip(canvas) {

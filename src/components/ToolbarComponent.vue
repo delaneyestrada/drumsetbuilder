@@ -205,8 +205,10 @@ export default {
                 type: this.drumType,
                 diameter: this.drumDiameter,
                 brand: this.drumBrand,
-                model: this.drumModel
+                model: this.drumModel,
             }
+            options.label = `${this.drumDepth ? this.drumDepth + '" x ' : ""}${this.drumDiameter}" ${this.drumBrand ? this.drumBrand + ' ' : ''}${this.drumModel ? this.drumModel + ' ' : ''} ${this.drumType}`
+
             if(this.depth != ""){
                 options = {
                     ...options, depth: this.drumDepth
@@ -219,8 +221,12 @@ export default {
                 type: this.cymbalType,
                 diameter: this.cymbalDiameter,
                 brand: this.cymbalBrand,
-                model: this.cymbalModel
+                model: this.cymbalModel,
+                label: `${this.cymbalDiameter}" ${this.cymbalBrand ? this.cymbalBrand + ' ' : ''}${this.cymbalModel ? this.cymbalModel + ' ' : ''}${this.cymbalType}`
             }
+
+            console.log(options.label)
+            console.log(options)
             CanvasService.addToCanvas(this.canvas, 'cymbal', options)
         },
         removeObject(){

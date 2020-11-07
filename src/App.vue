@@ -290,6 +290,10 @@ export default {
 html, body, .modal {
     font-family: 'Montserrat', sans-serif;
 }
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 .brand {
   font-family: "Exo 2", sans-serif;

@@ -22,8 +22,8 @@
     </div> -->
     <b-card bg-variant="dark" no-body class="mt-3 mb-5 list-card">
     <div id="object-lists" class="mt-3">
-    <CanvasListComponent class="mx-3" v-bind:objects="canvasDrums" v-on:edit-object="editObjectModal($event)"  v-on:delete-object="deleteObject($event)">Drum List</CanvasListComponent>
-    <CanvasListComponent class="mx-3 mb-3" v-bind:objects="canvasCymbals" v-on:edit-object="editObjectModal($event)"  v-on:delete-object="deleteObject($event)">Cymbal List</CanvasListComponent>
+    <CanvasListComponent class="mx-3 canvas-list" v-bind:objects="canvasDrums" v-on:edit-object="editObjectModal($event)"  v-on:delete-object="deleteObject($event)">Drum List</CanvasListComponent>
+    <CanvasListComponent class="mx-3 mb-3 canvas-list" v-bind:objects="canvasCymbals" v-on:edit-object="editObjectModal($event)"  v-on:delete-object="deleteObject($event)">Cymbal List</CanvasListComponent>
     </div>
     </b-card>
     <a id="scrnsht" target="_blank" download="download"></a>
@@ -34,7 +34,7 @@
     </template>
     <div class="item-labels mb-4">
       <div>Current: <code>{{currObj.label}}</code></div>
-      <div>New: <code>{{objEditForm.depth ? `${objEditForm.depth}" x ` : ''}}{{objEditForm.diameter}}" {{currObj.objInstrument}} {{objEditForm.label}}</code></div>
+      <div>New: <code>{{objEditForm.depth ? `${objEditForm.depth}" x ` : ''}}{{objEditForm.diameter}}" {{objEditForm.brand ? objEditForm.brand + ' ' : ''}}{{objEditForm.model ? objEditForm.model + ' ' : ''}}{{currObj.objInstrument}}</code></div>
       </div>
               <b-form-group
               id="diameter"
@@ -121,6 +121,7 @@ export default {
     canvasDrums: function () {
       if (this.canvas) {
         let drumObjects = this.canvas._objects.filter(object => object.objType == 'drum')
+        console.log(drumObjects)
         return drumObjects
       } else {
         return null
@@ -267,7 +268,9 @@ export default {
 .user-dropdown em {
   font-size: .9rem;
 } */
-
+.canvas-list {
+  max-width: 100%;
+}
 .fabric-wrapper, .toolbar, .list-card {
   width: 100%;
   max-width: 1000px;

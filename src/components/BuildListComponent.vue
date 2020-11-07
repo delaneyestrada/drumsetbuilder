@@ -47,6 +47,7 @@ export default {
     },
     computed: {
         sortedBuilds: function() {
+            if(this.user.userProfile.builds.length){
             let sortedBuilds = this.user.userProfile.builds
             sortedBuilds = sortedBuilds.map(build => {
                 return {...build, createdAt: build.createdAt.toDate(), modifiedAt: build.modifiedAt.toDate()}
@@ -55,6 +56,9 @@ export default {
                 return a.createdAt - b.createdAt
             })
             return sortedBuilds
+            } else {
+                return null
+            }
         }, 
         ...mapState(['user', 'build'])
     },
