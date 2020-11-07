@@ -201,7 +201,7 @@ export default {
           })
         })
       } else {
-        CanvasService.initCanvas(this.canvas)
+        CanvasService.initCanvas(this.canvas, require('@/assets/pattern.png'))
       }
 
 

@@ -5,7 +5,6 @@ import {
     v4 as uuidv4
 } from 'uuid'
 const scaleFactor = 4
-const rugPattern = require('@/assets/pattern.png')
 class CanvasService {
 
 
@@ -35,7 +34,7 @@ class CanvasService {
         canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
     }
 
-    static initCanvas(canvas) {
+    static initCanvas(canvas, rugPattern) {
         let rug = new fabric.Rect({
             width: 84 * scaleFactor,
             height: 60 * scaleFactor,
