@@ -168,6 +168,19 @@ export default {
     // this.persisted.authToken = window.localStorage.auth
     // // this.user = {id: window.localStorage.userId, username: window.localStorage.username}
   },
+  head: {
+    meta: [
+      {name: 'description', content: 'Build and save your drum setup and export it as an image.'},
+      {name: 'og:description', content: 'Build and save your drum setup and export it as an image.'},
+      {name: 'twitter:description', content: 'Build and save your drum setup and export it as an image.'},
+      {name: 'og:title', content: 'Drumset Builder'},
+      {name: 'twitter:title', content: 'Drumset Builder'},
+      {name: 'og:image', content: require('./assets/drumsetbuilder-white.png')},
+      {name: 'twitter:image', content: require('./assets/drumsetbuilder-white.png')},
+      {name: 'og:url', content: 'https://www.drumsetbuilder.com'},
+      {name: 'twitter:card', content: 'summary_large_image'},
+    ]
+  },
   methods: {
     validateState(name) {
       let objArr = name.split('.')

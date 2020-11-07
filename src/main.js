@@ -5,6 +5,7 @@ import {
   BootstrapVue,
   IconsPlugin
 } from 'bootstrap-vue'
+import VueHead from 'vue-head'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import router from './router'
@@ -17,6 +18,7 @@ import {
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueHead)
 
 
 let app
@@ -26,7 +28,7 @@ auth.onAuthStateChanged(() => {
       router,
       store,
       render: h => h(App),
-  mounted: () => document.dispatchEvent(new Event("x-app-rendered")),
+      mounted: () => document.dispatchEvent(new Event("x-app-rendered")),
     }).$mount('#app')
   }
 })
