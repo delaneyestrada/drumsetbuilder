@@ -5,6 +5,7 @@ import {
     v4 as uuidv4
 } from 'uuid'
 const scaleFactor = 4
+
 class CanvasService {
 
 
@@ -22,8 +23,6 @@ class CanvasService {
         } else if (containerWidth > 1000) {
             return true
         }
-
-        // const containerHeight = outerCanvasContainer.clientHeight;
 
         const scale = containerWidth / canvas.getWidth();
         const zoom = canvas.getZoom() * scale;
@@ -50,15 +49,14 @@ class CanvasService {
                 repeat: 'repeat'
             }))
             canvas.renderAll()
+            this.resizeCanvas(canvas)
         })
-        this.resizeCanvas(canvas)
 
     }
 
     static convertToImage(canvas) {
         this.resizeCanvas(canvas, false, true)
         canvas.discardActiveObject().renderAll();
-        // document.getElementById("scrnsht").src = canvas.toDataURL('png');
         let link = document.getElementById("scrnsht")
         link.href = canvas.toDataURL('png')
         link.click()
@@ -143,13 +141,6 @@ class CanvasService {
 
         canvas.add(obj)
         this.resizeCanvas(canvas)
-
-        // canvas.forEachObject(function (obj) {
-        //     if(obj.label){
-
-        //     drumList.innerHTML += `<li class="drum-list-item">${obj.label} ${obj.userLabel}</li>`
-        //     }
-        // })
     }
 
     static canvasToJSON(canvas) {

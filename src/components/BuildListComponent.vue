@@ -12,7 +12,7 @@
                         <div class="build-info" v-b-tooltip.hover="{title:`Click to load '${build.name.replace(/-/g, ' ')}'`, interactive: false, disabled: !$store.state.app.tooltips}" @click="loadBuild(build._id)">
                         <h3>{{build.name.replace(/-/g, ' ')}}</h3>
                          {{ `Created: ${build.createdAt.getMonth() + 1}-${build.createdAt.getDate()}-${build.createdAt.getFullYear()}` }} 
-                         {{ `Modified: ${build.modifiedAt.getMonth() + 1}-${build.modifiedAt.getDate()}-${build.modifiedAt.getFullYear()}` }} 
+                         <!-- {{ `Modified: ${build.modifiedAt.getMonth() + 1}-${build.modifiedAt.getDate()}-${build.modifiedAt.getFullYear()}` }}  -->
                         </div>
                         <div class="delete" v-if="deleteButton">
                             <b-button variant="danger" v-on:click="deleteBuild(build._id)">Delete</b-button>
@@ -42,15 +42,12 @@ export default {
         deleteButton: Boolean,
         highlighting: Boolean
     },
-    mounted() {
-        // this.getBuilds()
-    },
     computed: {
         sortedBuilds: function() {
             if(this.user.userProfile.builds.length){
             let sortedBuilds = this.user.userProfile.builds
             sortedBuilds = sortedBuilds.map(build => {
-                return {...build, createdAt: build.createdAt.toDate(), modifiedAt: build.modifiedAt.toDate()}
+                return {...build, createdAt: new Date(build.createdAt.seconds * 1000), modifiedAt: new Date(build.modifiedAt.seconds * 1000)}
             })
             sortedBuilds.sort((a, b) => {
                 return a.createdAt - b.createdAt

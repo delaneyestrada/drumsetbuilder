@@ -141,6 +141,9 @@ export default {
       } else {
         return null
       }
+    },
+    rugPattern(){
+      return require('@/assets/pattern.png')
     }
   },
   mounted() {
@@ -201,7 +204,7 @@ export default {
           })
         })
       } else {
-        CanvasService.initCanvas(this.canvas, require('@/assets/pattern.png'))
+        CanvasService.initCanvas(this.canvas, this.rugPattern)
       }
 
 

@@ -88,7 +88,7 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
-    <router-view />
+    <router-view @reset-password="resetPassword" />
     <b-modal id="password-reset-modal" title="Reset Password" v-on:ok="resetPassword">
         <b-form-group
               label="Email"
@@ -102,7 +102,9 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+  import {
+    mapState
+  } from 'vuex'
 import {
   validationMixin
 } from "vuelidate";
@@ -112,7 +114,9 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
-import { auth } from '@/firebase'
+import {
+  auth
+} from '@/firebase'
 
 export default {
   name: 'App',
@@ -157,28 +161,46 @@ export default {
       }
     }
   },
-  created() {
-    // if (window.localStorage.auth != "null" && window.localStorage.auth != "false") {
-    //   this.persisted.authenticated = true
-    // } else {
-    //   this.persisted.authenticated = false
-    // }
-    // this.persisted.username = window.localStorage.username.replace(/"/g, '')
-    // this.persisted.userId = window.localStorage.userId.replace(/"/g, '')
-    // this.persisted.authToken = window.localStorage.auth
-    // // this.user = {id: window.localStorage.userId, username: window.localStorage.username}
-  },
   head: {
-    meta: [
-      {name: 'description', content: 'Build and save your drum setup and export it as an image.'},
-      {name: 'og:description', content: 'Build and save your drum setup and export it as an image.'},
-      {name: 'twitter:description', content: 'Build and save your drum setup and export it as an image.'},
-      {name: 'og:title', content: 'Drumset Builder'},
-      {name: 'twitter:title', content: 'Drumset Builder'},
-      {name: 'og:image', content: require('./assets/drumsetbuilder-white.png')},
-      {name: 'twitter:image', content: require('./assets/drumsetbuilder-white.png')},
-      {name: 'og:url', content: 'https://www.drumsetbuilder.com'},
-      {name: 'twitter:card', content: 'summary_large_image'},
+    title: {
+      inner: 'Drumset Builder'
+    },
+    meta: [{
+        name: 'description',
+        content: 'Build and save your drum setup and export it as an image.'
+      },
+      {
+        name: 'og:description',
+        content: 'Build and save your drum setup and export it as an image.'
+      },
+      {
+        name: 'twitter:description',
+        content: 'Build and save your drum setup and export it as an image.'
+      },
+      {
+        name: 'og:title',
+        content: 'Drumset Builder'
+      },
+      {
+        name: 'twitter:title',
+        content: 'Drumset Builder'
+      },
+      {
+        name: 'og:image',
+        content: require('./assets/drumsetbuilder-white.png')
+      },
+      {
+        name: 'twitter:image',
+        content: require('./assets/drumsetbuilder-white.png')
+      },
+      {
+        name: 'og:url',
+        content: 'https://www.drumsetbuilder.com'
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image'
+      },
     ]
   },
   methods: {
@@ -190,54 +212,21 @@ export default {
       } = this.$v[objArr[0]][objArr[1]];
       return $dirty ? !$error : null;
     },
-    logIn({authCreds = null}) {
+    logIn({
+      authCreds = null
+    }) {
       console.log(authCreds)
       this.$store.dispatch('login', {
         email: this.signIn.email,
         password: this.signIn.password
       })
-      // if (authCreds === null) {
-      //   authCreds = {
-      //     username: this.signIn.username,
-      //     password: this.signIn.password
-      //   }
-      // }
-      // fetch('http://localhost:5001/api/users/login', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //     body: JSON.stringify(authCreds)
-      //   })
-      //   .then(res => res.json()
-      //     .then((data) => {
-      //       if (data.success) {
-      //         let user = {
-      //           id: data.user,
-      //           username: data.username
-      //         }
-      //         window.localStorage.userId = user.id
-      //         window.localStorage.username = user.username
-      //         window.localStorage.auth = res.headers.get('auth-token')
-      //         this.persisted.authenticated = true
-      //       } else {
-      //         this.persisted.authenticated = false
-      //         this.signIn.error = true
-      //       }
-      //     }))
-      //   .catch(err => {
-      //     this.signIn.error = true
-      //     console.log(err)
-      //   })
     },
     logOut() {
-      // window.localStorage.auth = false
-      // window.localStorage.username = null
-      // window.localStorage.userId = null
-      // this.persisted.authenticated = false
       this.$store.dispatch('logout')
-      if(this.$route.name !== 'home'){
-        this.$router.push({path: '/'})
+      if (this.$route.name !== 'home') {
+        this.$router.push({
+          path: '/'
+        })
       }
     },
     registerForm() {
@@ -252,41 +241,16 @@ export default {
       }
       console.log(registerData)
       this.$store.dispatch('register', registerData)
-      // fetch('http://localhost:5001/api/users/register', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //     body: JSON.stringify(registerData)
-      //   })
-      //   .then(res => res.json()
-      //     .then((data) => {
-      //       if (data.success) {
-      //         let authCreds = {
-      //           username: this.register.username,
-      //           password: this.register.password,
-      //         }
-      //         this.logIn(authCreds)
-      //       } else {
-      //         this.register.error = true
-      //       }
-      //     }))
-      //   .catch(err => {
-      //     this.register.error = true
-      //     console.log(err)
-      //   })
     },
-    async resetPassword() {
-    try {
-    await auth.sendPasswordResetEmail(this.passwordReset.email)
-    this.showSuccess = true
-  } catch (err) {
-    this.passwordReset.error = err.message
-  }
-  }
+    async resetPassword(email = null) {
+      try {
+        await auth.sendPasswordResetEmail(email ? email : this.passwordReset.email)
+        this.showSuccess = true
+      } catch (err) {
+        this.passwordReset.error = err.message
+      }
+    }
   },
-  
-
 }
 </script>
 

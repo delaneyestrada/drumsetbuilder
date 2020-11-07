@@ -42,6 +42,7 @@ const actions = {
         // create user profile object in userCollections
         await fb.usersCollection.doc(user.uid).set({
             username: form.username,
+            email: form.email,
             builds: []
         })
 

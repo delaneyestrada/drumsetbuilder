@@ -1,7 +1,7 @@
 <template>
 <div id="user">
     <b-container fluid="sm">
-        <b-row align-h="center">
+        <!-- <b-row align-h="center">
         <b-col md="6">
         <b-form class="p-5">
             <b-form-text text-variant='light' tag="h2">Reset Password</b-form-text>
@@ -26,60 +26,73 @@
             </b-button>
         </b-form>
         </b-col>
-        </b-row>
+        </b-row> -->
+        <b-alert :show="showAlert" dismissable fade variant="primary">Password Reset Email Sent</b-alert>
+        <main>
+        <div class="section">
+          <h2 class="text-light">Actions</h2>
+          <div class="action-buttons">
+          <b-button variant="secondary" @click="resetPassword">Send Password Reset Email</b-button>
+          </div>
+        </div>
+        <div class="section">
         <h2 class="text-light">Builds</h2>
         <BuildListComponent class="pb-5" deleteButton />
+        </div>
+        </main>
     </b-container>
 </div>
 </template>
 
 <script>
-import {
-  validationMixin
-} from "vuelidate";
-import { required, sameAs } from "vuelidate/lib/validators";
-
+// import {
+//   validationMixin
+// } from "vuelidate";
+// import { required, sameAs } from "vuelidate/lib/validators";
+import {mapState} from 'vuex'
 import BuildListComponent from '../components/BuildListComponent'
 
 export default {
   name: 'User',
-  mixins: [validationMixin],
+  // mixins: [validationMixin],
   components: {
       BuildListComponent
   },
-  data() {
+  data(){
     return {
-      userForm: {
-        password: "",
-        repeatPassword: "",
-        error: false,
-      }
+      dismissSeconds: 4,
+      showAlert: 0
     }
   },
-  validations: {
-    userForm: {
-      password: {
-        required
-      },
-      repeatPassword: {
-        required,
-        sameAsPassword: sameAs('password')
-      }
-    }
-  },
+  computed: mapState(['user']),
   methods: {
-      validateState(name) {
-      let objArr = name.split('.')
-      const {
-        $dirty,
-        $error
-      } = this.$v[objArr[0]][objArr[1]];
-      return $dirty ? !$error : null;
+    resetPassword() {
+      this.$emit('reset-password', this.user.userProfile.email)
+      this.showAlert = this.dismissSeconds
     }
-  }
+  },
+  // methods: {
+  //     validateState(name) {
+  //     let objArr = name.split('.')
+  //     const {
+  //       $dirty,
+  //       $error
+  //     } = this.$v[objArr[0]][objArr[1]];
+  //     return $dirty ? !$error : null;
+  //   }
+  // }
 }
 </script>
 
 <style scoped>
-    
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2em;
+      margin-top: 3em;
+    }
+    .action-buttons button {
+      margin: 1em;
+    }
 </style>
