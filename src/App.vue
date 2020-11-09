@@ -209,12 +209,13 @@ export default {
     logIn({
       authCreds = null
     }) {
+      authCreds = null
       console.log(authCreds)
+      this.$gtag.event('login')
       this.$store.dispatch('login', {
         email: this.signIn.email,
         password: this.signIn.password
       })
-      this.$gtag.event('login')
     },
     logOut() {
       this.$store.dispatch('logout')
