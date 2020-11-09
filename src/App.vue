@@ -214,6 +214,7 @@ export default {
         email: this.signIn.email,
         password: this.signIn.password
       })
+      this.$gtag.event('login')
     },
     logOut() {
       this.$store.dispatch('logout')
