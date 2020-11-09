@@ -12,8 +12,13 @@ import router from './router'
 import {
   auth
 } from './firebase'
+import VueGtag from "vue-gtag";
 
-
+Vue.use(VueGtag, {
+  config: {
+    id: "G-KCSYBEH5PZ'"
+  }
+});
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
