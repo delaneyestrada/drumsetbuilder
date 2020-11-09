@@ -21,7 +21,7 @@
                             <input type="hidden" name="bugs-and-features" value="bugs-and-features">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input required type="text" class="form-control" id="sender" name="sender" value=""
+                                <input required type="text" class="form-control" id="sender" name="name" value=""
                                     aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
