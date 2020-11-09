@@ -86,7 +86,7 @@
             v-b-tooltip.hover.bottom="{title: 'Delete selected from canvas', interactive: false, disabled: !$store.state.app.tooltips}">
             <img class="img-fluid p-2" src='../assets/delete.svg' alt=''>
         </b-button>
-        <b-dropdown no-caret variant="link"
+        <b-dropdown no-caret right variant="link"
             v-b-tooltip.hover.bottom="{title: 'Canvas options', interactive: false, disabled: !$store.state.app.tooltips}">
             <template slot="button-content">
                 <img class="img-fluid p-2" src='../assets/list.svg' alt=''>

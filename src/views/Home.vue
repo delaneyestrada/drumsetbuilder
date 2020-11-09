@@ -249,7 +249,7 @@ export default {
 </script>
 
 <style>
-.dropdown-menu:not(.user-dropdown){
+.dropdown-menu:not(.user-dropdown):not(.dropdown-menu-right){
   min-width: 20em;
 }
 /* .user-dropdown {

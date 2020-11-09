@@ -3,7 +3,7 @@
     <b-navbar type="dark" variant="dark" class="mb-3">
       <b-navbar-nav>
         <b-navbar-brand class="brand" to="/">
-      <img src="@/assets/drumsetbuilder-wide.svg" class="d-inline-block align-top brand-logo" alt="Drumset Builder">
+      <img src="@/assets/drumsetbuilder-nobackground.png" class="d-inline-block align-top brand-logo" alt="Drumset Builder">
     </b-navbar-brand>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
@@ -286,18 +286,12 @@ body {
 }
 
 .brand {
-  font-family: "Exo 2", sans-serif;
-  font-size: 1.2em;
-  max-width: 50%;
-  width: 15em;
+  width: 8rem;
+  height: auto;
 }
-
 .brand-logo {
   width: 100%;
-  height: 100%;
-  overflow: visible;
 }
-
 .nav-link {
   font-weight: 600;
 }
