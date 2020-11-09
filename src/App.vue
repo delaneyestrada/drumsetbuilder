@@ -288,11 +288,14 @@ body {
 .brand {
   font-family: "Exo 2", sans-serif;
   font-size: 1.2em;
+  max-width: 50%;
+  width: 15em;
 }
 
 .brand-logo {
-  max-width: 8em;
+  width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
 .nav-link {
