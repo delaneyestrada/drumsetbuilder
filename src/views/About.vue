@@ -17,7 +17,7 @@
         </b-card>
         <b-card>
             <b-card-title>Bug Reports & Feature Requests</b-card-title>
-             <form name="bugs-and-features" id="bugs-and-features" method="POST" data-netlify="true" data-netlify-recaptcha="true">
+             <form name="bugs-and-features" id="bugs-and-features" method="POST" data-netlify="true">
                             <input type="hidden" name="bugs-and-features" value="bugs-and-features">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -31,9 +31,6 @@
                             <div class="mb-3">
                                 <label class="form-label" for="message">Message</label>
                                 <textarea required class="form-control" id="message" rows="3" name="message"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <div data-netlify-recaptcha="true"></div>
                             </div>
                             <button id="contact-submit" type="submit" class="btn btn-primary">Submit</button>
                         </form>
