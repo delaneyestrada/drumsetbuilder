@@ -143,18 +143,56 @@ export default {
     data() {
         return {
             drumType: 'Kick',
-            drumDiameter: 14,
-            drumDepth: 6,
+            drumDiameter: 22,
+            drumDepth: 18,
             drumBrand: "",
             drumModel: "",
-            cymbalDiameter: 18,
             cymbalType: 'Crash',
+            cymbalDiameter: 18,
             cymbalBrand: "",
             cymbalModel: "",
             saveCanvasName: "",
         }
     },
-    computed: mapState(['user', 'build']),
+    watch: {
+        drumType: function(val) {
+            switch(val) {
+                case 'Kick':
+                    this.drumDiameter = 22
+                    this.drumDepth = 18
+                    break
+                case 'Tom':
+                    this.drumDiameter = 10
+                    this.drumDepth = 8
+                    break
+                case 'Snare':
+                    this.drumDiameter = 14
+                    this.drumDepth = 6.5
+                    break
+            }
+        },
+        cymbalType: function(val) {
+            switch(val) {
+                case 'Crash':
+                    this.cymbalDiameter = 18
+                    break
+                case 'Ride':
+                    this.cymbalDiameter = 22
+                    break
+                case 'Hi-Hats':
+                    this.cymbalDiameter = 14
+                    break
+                case 'Splash':
+                    this.cymbalDiameter = 10
+                    break
+                case 'China':
+                    this.cymbalDiameter = 18
+                    break
+            }
+        }
+    },
+    computed: {
+        ...mapState(['user', 'build'])},
     methods: {
         screenshot(){
             CanvasService.convertToImage(this.canvas)
@@ -225,10 +263,7 @@ export default {
             this.$root.$emit('bv::show::tooltip', 'toggleTooltipsButton')
         }
             this.$store.dispatch('toggleTooltips')
-        },
-        test(){
-            console.log('test')
-        },
+        }
     }
 }
 </script>

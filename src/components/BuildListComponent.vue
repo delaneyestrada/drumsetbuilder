@@ -86,7 +86,6 @@ export default {
             this.$store.dispatch('deleteBuild', buildId)
         },
         loadBuild(buildId) {
-            console.log(buildId)
             this.$store.dispatch('setBuildId', buildId)
             if(this.$route.name != 'home'){
             this.$router.push({

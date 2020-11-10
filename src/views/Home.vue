@@ -19,7 +19,7 @@
     </b-card>
     <a id="scrnsht" target="_blank" download="download"></a>
     </b-container>
-    <b-modal id="editObjectModal" ref="editModal" v-on:cancel="clearObjForm" v-on:close="clearObjForm" v-on:ok="editObject">
+    <b-modal id="editObjectModal" ref="editModal" v-on:ok="editObject">
     <template #modal-title>
       Edit object
     </template>
@@ -103,7 +103,6 @@ export default {
     canvasDrums: function () {
       if (this.canvas) {
         let drumObjects = this.canvas._objects.filter(object => object.objType == 'drum')
-        console.log(drumObjects)
         return drumObjects
       } else {
         return null
@@ -213,8 +212,13 @@ export default {
       }
       this.canvas.setActiveObject(object)
       this.currObj = object
-      console.log(object)
       this.editModalId = object.id
+
+      this.objEditForm.diameter = this.currObj.diameter
+      this.objEditForm.depth = this.currObj.depth
+      this.objEditForm.model = this.currObj.model
+      this.objEditForm.brand = this.currObj.brand
+
       this.$forceUpdate()
       this.$bvModal.show('editObjectModal')
     },
@@ -231,18 +235,13 @@ export default {
         options.height = this.objEditForm.depth * this.scaleFactor
       }
 
-
+      options.depth = this.objEditForm.depth
+      options.diameter = this.objEditForm.diameter
       options.label = `${this.objEditForm.depth ? this.objEditForm.depth + '" x ' : ""}${this.objEditForm.diameter}" ${this.objEditForm.brand} ${this.objEditForm.model} ${this.currObj.objInstrument}`
       options.brand = this.objEditForm.brand
       options.model = this.objEditForm.model
       this.currObj.set(options)
       this.canvas.renderAll()
-      this.clearObjForm()
-    },
-    clearObjForm() {
-      this.objEditForm.diameter = ""
-      this.objEditForm.depth = ""
-      this.objEditForm.label = ""
     }
   }
 }

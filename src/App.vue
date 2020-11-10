@@ -8,7 +8,7 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item to="/about">About</b-nav-item>
-      <b-nav-item-dropdown v-if="Object.keys(user.userProfile).length" right no-caret menu-class="user-dropdown">
+      <b-nav-item-dropdown v-if="Object.keys(user.userProfile).length" right no-caret class="user-dropdown" menu-class="user-dropdown">
           <template #button-content>
             {{user.userProfile.username.length > 0 ? user.userProfile.username : 'User'}}
           </template>
@@ -62,7 +62,7 @@
             </b-button>
           </b-nav-form>
         </b-nav-item-dropdown>
-      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" class="user-dropdown">
+      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" class="user-dropdown sign-in">
           <template #button-content>
             Sign In
           </template>
@@ -209,8 +209,9 @@ export default {
     logIn({
       authCreds = null
     }) {
+      if(authCreds){
       authCreds = null
-      console.log(authCreds)
+      }
       this.$gtag.event('login')
       this.$store.dispatch('login', {
         email: this.signIn.email,
@@ -235,7 +236,6 @@ export default {
         password: this.register.password,
         email: this.register.email,
       }
-      console.log(registerData)
       this.$store.dispatch('register', registerData)
     },
     async resetPassword(email = null) {
@@ -309,7 +309,7 @@ body {
   width: 100%;
 }
 
-.user-dropdown .nav-link {
+.user-dropdown:not(.sign-in) .nav-link {
   color: #fff !important;
 }
 /* body {
