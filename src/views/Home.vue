@@ -285,7 +285,7 @@ export default {
   max-width: 1000px;
 }
 
-@media screen and  (max-height: 900px) and (orientation: landscape){
+@media screen and  (max-width: 500px) and (orientation: landscape){
   .fabric-wrapper {
     max-width: 70% !important;
     height: 85vh;

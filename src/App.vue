@@ -261,6 +261,7 @@ export default {
   min-height: 100vh;
   height: 100%;
   background-color: #1a1a1a;
+  padding-bottom: 70px;
 }
 @media screen and (max-width: 800px) and (min-width: 490px){
 :root {
