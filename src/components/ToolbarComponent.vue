@@ -105,7 +105,7 @@
             v-b-tooltip.hover.bottom="{title: 'Toggle tips', interactive: false, disabled: !$store.state.app.tooltips}">
             <img class="img-fluid p-2" src='../assets/bulb.svg' alt=''>
         </b-button>
-        <b-modal id="download-modal" title="Download Canvas" v-on:ok="test">
+        <b-modal id="download-modal" title="Download Canvas">
             <p class="my-4">Hello from modal!</p>
         </b-modal>
         <b-modal id="save-modal" title="Save Canvas" v-on:ok="saveCanvas">

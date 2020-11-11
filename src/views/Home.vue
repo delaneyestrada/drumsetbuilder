@@ -77,7 +77,6 @@ import {
   mapState
 } from 'vuex'
 
-
 export default {
   name: 'Home',
   components: {
@@ -152,13 +151,25 @@ export default {
 
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize)
-      // const ref = this.$refs.can;
-      // console.log(ref)
-      // ref.addEventListener('click', (e) => {
-      //   console.log('test')
-      //   console.log(e)
-      // })
     })
+
+    window.addEventListener('touchstart', function() {
+      let portraitMode = window.innerWidth < window.innerHeight
+      let smallDevice = window.innerWidth < 500
+      if(portraitMode && smallDevice){
+        if(window.localStorage.landscapeModal != 'false') {
+        this.$bvModal.msgBoxOk('We detected that you are on a mobile device. Switch to landscape mode while using the builder for the best experience.')
+          .then((value) => {
+            if (value){
+            window.localStorage.landscapeModal = 'false'
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        }
+      }
+    }.bind(this), false)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
@@ -272,6 +283,23 @@ export default {
 .fabric-wrapper, .toolbar, .list-card {
   width: 100%;
   max-width: 1000px;
+}
+
+@media screen and  (max-height: 900px) and (orientation: landscape){
+  .fabric-wrapper {
+    max-width: 70% !important;
+    height: 85vh;
+  }
+  .toolbar {
+    height: 10vh;
+    margin-bottom: 5vh;
+  }
+  .toolbar img {
+    max-height: 10vh;
+  }
+    :root, body {
+    font-size: 10px;
+  }
 }
 
 
