@@ -153,23 +153,26 @@ export default {
       window.addEventListener('resize', this.onResize)
     })
 
-    window.addEventListener('touchstart', function() {
-      let portraitMode = window.innerWidth < window.innerHeight
-      let smallDevice = window.innerWidth < 500
-      if(portraitMode && smallDevice){
-        if(window.localStorage.landscapeModal != 'false') {
-        this.$bvModal.msgBoxOk('We detected that you are on a mobile device. Switch to landscape mode while using the builder for the best experience.')
-          .then((value) => {
-            if (value){
-            window.localStorage.landscapeModal = 'false'
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        }
-      }
-    }.bind(this), false)
+    // window.addEventListener('touchstart', function() {
+    //   let portraitMode = window.innerWidth < window.innerHeight
+    //   let smallDevice = window.innerWidth < 500
+    //   if(portraitMode && smallDevice){
+    //     if(window.localStorage.landscapeModal != 'false') {
+    //       window.localStorage.landscapeModal = 'false'
+    //     this.$bvModal.msgBoxOk('We detected that you are on a mobile device. Switch to landscape mode while using the builder for the best experience.', {
+    //       'no-close-on-backdrop': true
+    //     })
+    //       .then((value) => {
+    //         if (value){
+    //         console.log(value)
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    //     }
+    //   }
+    // }.bind(this), false)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
@@ -285,7 +288,7 @@ export default {
   max-width: 1000px;
 }
 
-@media screen and  (max-width: 500px) and (orientation: landscape){
+@media screen and  (max-width: 900px) and (max-height: 500px) and (orientation: landscape){
   .fabric-wrapper {
     max-width: 70% !important;
     height: 85vh;
