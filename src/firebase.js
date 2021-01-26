@@ -1,6 +1,7 @@
-// <!-- The core Firebase JS SDK is always required and must be listed first -->
-// <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+import firebase from "firebase";
+import firebaseConfig from "./firebaseConfig";
 
+<<<<<<< HEAD
 // <!-- TODO: Add SDKs for Firebase products that you want to use
 //      https://firebase.google.com/docs/web/setup#available-libraries -->
 // <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
@@ -34,19 +35,17 @@ const firebaseConfig = {
     appId: '1:299035189486:web:e55912f68ca311a45453ff'
 }
 firebase.initializeApp(firebaseConfig)
+=======
+firebase.initializeApp(firebaseConfig);
+>>>>>>> move firebase configuration
 
 // utils
-const db = firebase.firestore()
-const auth = firebase.auth()
-const fb = firebase
+const db = firebase.firestore();
+const auth = firebase.auth();
+const fb = firebase;
 
 // collection references
-const usersCollection = db.collection('users')
+const usersCollection = db.collection("users");
 
 // export utils/refs
-export {
-    db,
-    auth,
-    usersCollection,
-    fb
-}
+export { db, auth, usersCollection, fb };

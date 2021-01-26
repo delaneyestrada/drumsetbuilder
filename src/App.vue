@@ -3,123 +3,175 @@
     <b-navbar type="dark" variant="dark" class="mb-3">
       <b-navbar-nav>
         <b-navbar-brand class="brand" to="/">
-      <img src="@/assets/drumsetbuilder-nobackground.png" class="d-inline-block align-top brand-logo" alt="Drumset Builder">
-    </b-navbar-brand>
+          <img
+            src="@/assets/drumsetbuilder-nobackground.png"
+            class="d-inline-block align-top brand-logo"
+            alt="Drumset Builder"
+          />
+        </b-navbar-brand>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item to="/about">About</b-nav-item>
-      <b-nav-item-dropdown v-if="Object.keys(user.userProfile).length" right no-caret class="user-dropdown" menu-class="user-dropdown">
+        <b-nav-item-dropdown
+          v-if="Object.keys(user.userProfile).length"
+          right
+          no-caret
+          class="user-dropdown"
+          menu-class="user-dropdown"
+        >
           <template #button-content>
-            {{user.userProfile.username.length > 0 ? user.userProfile.username : 'User'}}
+            {{
+              user.userProfile.username.length > 0
+                ? user.userProfile.username
+                : "User"
+            }}
           </template>
-          <b-dropdown-item :to="`/user/${user.userProfile.username}`">Profile</b-dropdown-item>
+          <b-dropdown-item :to="`/user/${user.userProfile.username}`"
+            >Profile</b-dropdown-item
+          >
           <b-dropdown-item v-on:click="logOut">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
-        
-      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" menu-class="user-dropdown">
-          <template #button-content>
-            Register
-          </template>
+
+        <b-nav-item-dropdown
+          right
+          no-caret
+          v-if="!Object.keys(user.userProfile).length"
+          menu-class="user-dropdown"
+        >
+          <template #button-content> Register </template>
           <b-nav-form class="p-3" @submit.stop.prevent="registerForm">
-            <b-form-invalid-feedback id="register-feedback" :state="!this.register.error">Username and/or email already exists</b-form-invalid-feedback>
-
-            <b-form-group
-            label="Username"
-            label-for="register-username"
+            <b-form-invalid-feedback
+              id="register-feedback"
+              :state="!this.register.error"
+              >Username and/or email already exists</b-form-invalid-feedback
             >
-                <b-form-input id="register-username" type="text" :state="validateState('register.username')" data-form="register" v-model.trim="$v.register.username.$model"></b-form-input>
-                <b-form-invalid-feedback id="register-username-feedback">Username is required</b-form-invalid-feedback>
 
+            <b-form-group label="Username" label-for="register-username">
+              <b-form-input
+                id="register-username"
+                type="text"
+                :state="validateState('register.username')"
+                data-form="register"
+                v-model.trim="$v.register.username.$model"
+              ></b-form-input>
+              <b-form-invalid-feedback id="register-username-feedback"
+                >Username is required</b-form-invalid-feedback
+              >
+            </b-form-group>
+            <b-form-group label="Email" label-for="register-email">
+              <b-form-input
+                id="register-email"
+                type="text"
+                :state="validateState('register.email')"
+                data-form="register"
+                v-model.trim="$v.register.email.$model"
+              ></b-form-input>
+              <b-form-invalid-feedback v-if="!$v.register.email.email"
+                >Email be a valid email address</b-form-invalid-feedback
+              >
+              <b-form-invalid-feedback v-if="!$v.register.email.required"
+                >Email is required</b-form-invalid-feedback
+              >
+            </b-form-group>
+            <b-form-group label="Password" label-for="register-password">
+              <b-form-input
+                id="register-password"
+                type="password"
+                :state="validateState('register.password')"
+                data-form="register"
+                v-model.trim="$v.register.password.$model"
+              ></b-form-input>
+              <b-form-invalid-feedback v-if="!$v.register.password.minLength"
+                >Password must be at least 8 characters</b-form-invalid-feedback
+              >
+              <b-form-invalid-feedback v-if="!$v.register.password.required"
+                >Password is required</b-form-invalid-feedback
+              >
             </b-form-group>
             <b-form-group
-            label="Email"
-            label-for="register-email"
+              label="Repeat Password"
+              label-for="register-repeat-password"
             >
-                <b-form-input id="register-email" type="text" :state="validateState('register.email')" data-form="register" v-model.trim="$v.register.email.$model"></b-form-input>
-                <b-form-invalid-feedback v-if="!$v.register.email.email">Email be a valid email address</b-form-invalid-feedback>
-                <b-form-invalid-feedback v-if="!$v.register.email.required">Email is required</b-form-invalid-feedback>
-
+              <b-form-input
+                id="register-repeat-password"
+                type="password"
+                :state="validateState('register.repeatPassword')"
+                data-form="register"
+                v-model.trim="$v.register.repeatPassword.$model"
+              ></b-form-input>
+              <b-form-invalid-feedback id="register-repeat-password-feedback"
+                >Does not match password</b-form-invalid-feedback
+              >
             </b-form-group>
-            <b-form-group
-            label="Password"
-            label-for="register-password"
-            >
-                <b-form-input id="register-password" type="password" :state="validateState('register.password')" data-form="register" v-model.trim="$v.register.password.$model"></b-form-input>
-                <b-form-invalid-feedback v-if="!$v.register.password.minLength">Password must be at least 8 characters</b-form-invalid-feedback>
-                <b-form-invalid-feedback v-if="!$v.register.password.required">Password is required</b-form-invalid-feedback>
-
-            </b-form-group>
-            <b-form-group
-            label="Repeat Password"
-            label-for="register-repeat-password"
-            >
-                <b-form-input id="register-repeat-password" type="password" :state="validateState('register.repeatPassword')" data-form="register" v-model.trim="$v.register.repeatPassword.$model"></b-form-input>
-                <b-form-invalid-feedback id="register-repeat-password-feedback">Does not match password</b-form-invalid-feedback>
-
-            </b-form-group>
-            <b-button type="submit" variant="secondary">
-              Register
-            </b-button>
+            <b-button type="submit" variant="secondary"> Register </b-button>
           </b-nav-form>
         </b-nav-item-dropdown>
-      <b-nav-item-dropdown right no-caret v-if="!Object.keys(user.userProfile).length" class="user-dropdown sign-in">
-          <template #button-content>
-            Sign In
-          </template>
+        <b-nav-item-dropdown
+          right
+          no-caret
+          v-if="!Object.keys(user.userProfile).length"
+          class="user-dropdown sign-in"
+        >
+          <template #button-content> Sign In </template>
           <b-nav-form class="p-3" @submit.stop.prevent="logIn">
-            <b-form-invalid-feedback id="sign-in-feedback" :state="!this.signIn.error">Invalid username or password</b-form-invalid-feedback>
-            <b-form-group
-            label="Email"
-            label-for="sign-in-Email"
+            <b-form-invalid-feedback
+              id="sign-in-feedback"
+              :state="!this.signIn.error"
+              >Invalid username or password</b-form-invalid-feedback
             >
-                <b-form-input id="sign-in-Email" type="text" data-form="sign-in"  v-model="signIn.email"></b-form-input>
+            <b-form-group label="Email" label-for="sign-in-Email">
+              <b-form-input
+                id="sign-in-Email"
+                type="text"
+                data-form="sign-in"
+                v-model="signIn.email"
+              ></b-form-input>
             </b-form-group>
-            <b-form-group
-            label="Password"
-            label-for="sign-in-password"
+            <b-form-group label="Password" label-for="sign-in-password">
+              <b-form-input
+                id="sign-in-password"
+                type="password"
+                data-form="sign-in"
+                v-model="signIn.password"
+              ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="secondary"> Sign In </b-button>
+            <b-form-text
+              class="ml-3"
+              tag="a"
+              style="cursor: pointer"
+              v-b-modal.password-reset-modal
+              >Forgot Password</b-form-text
             >
-                <b-form-input id="sign-in-password" type="password" data-form="sign-in" v-model="signIn.password"></b-form-input>
-            </b-form-group>
-            <b-button type="submit" variant="secondary">
-              Sign In
-            </b-button>
-            <b-form-text class="ml-3" tag="a" style="cursor: pointer;" v-b-modal.password-reset-modal>Forgot Password</b-form-text>
           </b-nav-form>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
     <router-view @reset-password="resetPassword" />
-    <b-modal id="password-reset-modal" title="Reset Password" v-on:ok="resetPassword">
-        <b-form-group
-              label="Email"
-              >
-                <b-form-input v-model="passwordReset.email">
-                </b-form-input>
-              <b-form-text>Password reset link will be sent to the email you used to create the account</b-form-text>
-              </b-form-group>
-      </b-modal>
+    <b-modal
+      id="password-reset-modal"
+      title="Reset Password"
+      v-on:ok="resetPassword"
+    >
+      <b-form-group label="Email">
+        <b-form-input v-model="passwordReset.email"> </b-form-input>
+        <b-form-text
+          >Password reset link will be sent to the email you used to create the
+          account</b-form-text
+        >
+      </b-form-group>
+    </b-modal>
   </div>
 </template>
 
 <script>
-  import {
-    mapState
-  } from 'vuex'
-import {
-  validationMixin
-} from "vuelidate";
-import {
-  required,
-  minLength,
-  sameAs,
-  email
-} from "vuelidate/lib/validators";
-import {
-  auth
-} from '@/firebase'
+import { mapState } from "vuex";
+import { validationMixin } from "vuelidate";
+import { required, minLength, sameAs, email } from "vuelidate/lib/validators";
+import { auth } from "@/firebase";
 
 export default {
-  name: 'App',
+  name: "App",
   mixins: [validationMixin],
   data() {
     return {
@@ -137,93 +189,88 @@ export default {
       },
       passwordReset: {
         email: "",
-        error: false
-      }
-    }
+        error: false,
+      },
+    };
   },
-  computed: mapState(['user', 'build']),
+  computed: mapState(["user", "build"]),
   validations: {
     register: {
       username: {
-        required
+        required,
       },
       password: {
         required,
-        minLength: minLength(8)
+        minLength: minLength(8),
       },
       repeatPassword: {
         required,
-        sameAsPassword: sameAs('password')
+        sameAsPassword: sameAs("password"),
       },
       email: {
         required,
-        email
-      }
-    }
+        email,
+      },
+    },
   },
   head: {
     meta: [
       {
-        name: 'og:description',
-        content: 'Build and save your drum setup and export it as an image.'
+        name: "og:description",
+        content: "Build and save your drum setup and export it as an image.",
       },
       {
-        name: 'twitter:description',
-        content: 'Build and save your drum setup and export it as an image.'
+        name: "twitter:description",
+        content: "Build and save your drum setup and export it as an image.",
       },
       {
-        name: 'og:title',
-        content: 'Drumset Builder'
+        name: "og:title",
+        content: "Drumset Builder",
       },
       {
-        name: 'twitter:title',
-        content: 'Drumset Builder'
+        name: "twitter:title",
+        content: "Drumset Builder",
       },
       {
-        name: 'og:image',
-        content: require('./assets/drumsetbuilder-white.png')
+        name: "og:image",
+        content: require("./assets/drumsetbuilder-white.png"),
       },
       {
-        name: 'twitter:image',
-        content: require('./assets/drumsetbuilder-white.png')
+        name: "twitter:image",
+        content: require("./assets/drumsetbuilder-white.png"),
       },
       {
-        name: 'og:url',
-        content: 'https://www.drumsetbuilder.com'
+        name: "og:url",
+        content: "https://www.drumsetbuilder.com",
       },
       {
-        name: 'twitter:card',
-        content: 'summary_large_image'
+        name: "twitter:card",
+        content: "summary_large_image",
       },
-    ]
+    ],
   },
   methods: {
     validateState(name) {
-      let objArr = name.split('.')
-      const {
-        $dirty,
-        $error
-      } = this.$v[objArr[0]][objArr[1]];
+      let objArr = name.split(".");
+      const { $dirty, $error } = this.$v[objArr[0]][objArr[1]];
       return $dirty ? !$error : null;
     },
-    logIn({
-      authCreds = null
-    }) {
-      if(authCreds){
-      authCreds = null
+    logIn({ authCreds = null }) {
+      if (authCreds) {
+        authCreds = null;
       }
-      this.$gtag.event('login')
-      this.$store.dispatch('login', {
+      this.$gtag.event("login");
+      this.$store.dispatch("login", {
         email: this.signIn.email,
-        password: this.signIn.password
-      })
+        password: this.signIn.password,
+      });
     },
     logOut() {
-      this.$store.dispatch('logout')
-      if (this.$route.name !== 'home') {
+      this.$store.dispatch("logout");
+      if (this.$route.name !== "home") {
         this.$router.push({
-          path: '/'
-        })
+          path: "/",
+        });
       }
     },
     registerForm() {
@@ -235,25 +282,27 @@ export default {
         username: this.register.username,
         password: this.register.password,
         email: this.register.email,
-      }
-      this.$store.dispatch('register', registerData)
+      };
+      this.$store.dispatch("register", registerData);
     },
     async resetPassword(email = null) {
       try {
-        await auth.sendPasswordResetEmail(email ? email : this.passwordReset.email)
-        this.showSuccess = true
+        await auth.sendPasswordResetEmail(
+          email ? email : this.passwordReset.email
+        );
+        this.showSuccess = true;
       } catch (err) {
-        this.passwordReset.error = err.message
+        this.passwordReset.error = err.message;
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap");
 #app {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -263,23 +312,25 @@ export default {
   background-color: #1a1a1a;
   padding-bottom: 70px;
 }
-@media screen and (max-width: 800px) and (min-width: 490px){
-:root {
-  font-size: 14px;
+@media screen and (max-width: 800px) and (min-width: 490px) {
+  :root {
+    font-size: 14px;
+  }
 }
-}
-@media screen and (max-width: 490px) and (min-width: 400px){
+@media screen and (max-width: 490px) and (min-width: 400px) {
   :root {
     font-size: 12px;
   }
 }
-@media screen and (max-width: 422px){
+@media screen and (max-width: 422px) {
   :root {
     font-size: 10px;
   }
 }
-html, body, .modal {
-    font-family: 'Montserrat', sans-serif;
+html,
+body,
+.modal {
+  font-family: "Montserrat", sans-serif;
 }
 body {
   max-width: 100%;
